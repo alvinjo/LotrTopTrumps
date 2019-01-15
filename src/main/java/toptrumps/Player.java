@@ -1,5 +1,6 @@
 package toptrumps;
 
+import toptrumps.constants.Enums;
 import toptrumps.deck.Card;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -74,9 +75,6 @@ public class Player implements Runnable {
 
     private void cardAttribSelection(){
         displayCurrentCard();
-        out.println("\nSelect attribute to compare");
-        out.println("Resistance(Rs) Age(A) Resilience(Rl) Ferocity(F) Magic(M) Height(H)");
-        out.println("Followed by a high(H) or low(L) condition, separated by a space e.g. Rs H ");
 
         getAttribInput();
     }
@@ -87,13 +85,8 @@ public class Player implements Runnable {
     }
 
     private void getAttribInput(){
-        String[] choice = in.nextLine().toLowerCase().split(" ");
-
-        String attrib = choice[0];
-        boolean condition = (choice[1].equals("h"));
-
-        battle(attrib);
-
+        String[] attributeAndCondition = Input.attribInput(in, out);
+        battle(attributeAndCondition[0]);
     }
 
     private void battle(String attrib){
@@ -124,26 +117,9 @@ public class Player implements Runnable {
     }
 
     private boolean login(){
-
-        boolean loggedIn;
-        do{
-            loggedIn = loginInput();
-        }while(!loggedIn);
-
+        username = Input.login(in, out);
         game.addPlayerToList(this);
         return true;
-    }
-
-    private boolean loginInput(){
-        out.println("Enter username (1-15 alphanumeric characters): ");
-        username = in.nextLine();
-
-        if(username.matches("^[a-zA-Z0-9]{1,15}$")){
-            out.println("Username set to: " + username);
-            return true;
-        }
-        out.println("Bad username");
-        return false;
     }
 
     private void waitForOtherPlayers(){

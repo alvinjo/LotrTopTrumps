@@ -55,7 +55,7 @@ public class Game {
     public void displayWinnerOfRound(Player winner){
         for (Player p : playerList) {
             if(p.equals(winner)){
-                p.printOut("You won! The cards have been added to your deck.");
+                p.printOut("\nYou won! The cards have been added to your deck.");
             }else{
                 p.printOut(winner.getUsername() + " won! You lost a card!");
             }
