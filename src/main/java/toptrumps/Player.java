@@ -75,7 +75,6 @@ public class Player implements Runnable {
 
     private void cardAttribSelection(){
         displayCurrentCard();
-
         getAttribInput();
     }
 
@@ -86,12 +85,14 @@ public class Player implements Runnable {
 
     private void getAttribInput(){
         String[] attributeAndCondition = Input.attribInput(in, out);
-        battle(attributeAndCondition[0]);
+        battle(attributeAndCondition);
     }
 
-    private void battle(String attrib){
+    private void battle(String[] attributeAndCondition){
         battle = new Battle(game);
-        Player winner = battle.getWinnerOrDraw(attrib);
+
+        Player winner = battle.getWinnerOrDraw(attributeAndCondition);
+
         boolean someoneWon = winner != null;
         if(someoneWon){
             game.displayWinnerOfRound(winner);

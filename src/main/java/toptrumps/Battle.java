@@ -57,21 +57,38 @@ public class Battle {
     }
 
 
-    public Player getWinnerOrDraw(String attrib){
+    public Player getWinnerOrDraw(String[] attributeAndCondition){
         Player winner = playerList.get(0);
         for (int i = 1; i < playerList.size(); i++) {
-            int winnersStat = getValueOfAttribute(attrib, winner);
-            int enemyStat = getValueOfAttribute(attrib, playerList.get(i));
-            if( winnersStat == enemyStat){
+            int winnersStat = getValueOfAttribute(attributeAndCondition[0], winner);
+            int enemyStat = getValueOfAttribute(attributeAndCondition[0], playerList.get(i));
+            if(winnersStat == enemyStat){
                 addCardsToPile();
                 return null;
-            }else if(winnersStat < enemyStat){
+            }else if(highestWinsOrLowestWins(attributeAndCondition[1], winnersStat, enemyStat)){
                 winner = playerList.get(i);
             }
         }
         transferCards(winner);
         winner.sendCardToBack();
         return winner;
+    }
+
+    private static boolean highestWinsOrLowestWins(String condition, int winnersStat, int enemyStat){
+        return checkConditionHigh(condition) ? winnersStat < enemyStat : winnersStat > enemyStat;
+    }
+
+    private static boolean checkConditionHigh(String condition){
+        switch(condition){
+            case "h":
+            case "high":
+                return true;
+            case "l":
+            case "low":
+                return false;
+            default:
+                return true;
+        }
     }
 
 

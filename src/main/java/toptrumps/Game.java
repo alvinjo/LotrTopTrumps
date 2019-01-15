@@ -57,7 +57,7 @@ public class Game {
             if(p.equals(winner)){
                 p.printOut("\nYou won! The cards have been added to your deck.");
             }else{
-                p.printOut(winner.getUsername() + " won! You lost a card!");
+                p.printOut("\n" + winner.getUsername() + " won! You lost a card!");
             }
         }
     }
