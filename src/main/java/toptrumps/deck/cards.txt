@@ -1,0 +1,31 @@
+{"name":"Frodo Baggins", "culture":"Hobbit", "factfile":"", "resistance":1, "age":50, "resilience":7, "ferocity":30, "magic":4, "height":310}
+{"name":"The One Ring", "culture":"By Sauron", "factfile":"", "resistance":0, "age":4859, "resilience":7, "ferocity":0, "magic":20, "height":0}
+{"name":"Meriadoc Brandybuck", "culture":"Hobbit", "factfile":"", "resistance":2, "age":36, "resilience":9, "ferocity":42, "magic":1, "height":41}
+{"name":"Samwise Gamgee", "culture":"Hobbit", "factfile":"", "resistance":3, "age":38, "resilience":10, "ferocity":45, "magic":1, "height":39}
+{"name":"Gandalf The White", "culture":"Wizard", "factfile":"", "resistance":3, "age":2018, "resilience":10, "ferocity":67, "magic":20, "height":59}
+{"name":"Aragorn", "culture":"Human", "factfile":"", "resistance":2, "age":88, "resilience":9, "ferocity":62, "magic":15, "height":64}
+{"name":"Gimli", "culture":"Dwarf", "factfile":"", "resistance":2, "age":139, "resilience":7, "ferocity":56, "magic":1, "height":5}
+{"name":"Legolas", "culture":"Elf", "factfile":"", "resistance":2, "age":7000, "resilience":8, "ferocity":50, "magic":14, "height":510}
+{"name":"Elrond", "culture":"Elf", "factfile":"", "resistance":3, "age":6517, "resilience":6, "ferocity":38, "magic":19, "height":62}
+{"name":"Denethor", "culture":"Human", "factfile":"", "resistance":1, "age":89, "resilience":6, "ferocity":52, "magic":0, "height":61}
+{"name":"Faramir", "culture":"Human", "factfile":"", "resistance":2, "age":38, "resilience":6, "ferocity":55, "magic":4, "height":6}
+{"name":"Treebeard", "culture":"Ent", "factfile":"", "resistance":3, "age":17051, "resilience":9, "ferocity":15, "magic":17, "height":154}
+{"name":"Gollum", "culture":"Hobbit", "factfile":"", "resistance":0, "age":589, "resilience":4, "ferocity":47, "magic":4, "height":37}
+{"name":"Smeagol", "culture":"Hobbit", "factfile":"", "resistance":0, "age":50, "resilience":5, "ferocity":24, "magic":1, "height":37}
+{"name":"Sauron", "culture":"Dark Lord", "factfile":"", "resistance":5, "age":7061, "resilience":8, "ferocity":45, "magic":20, "height":0}
+{"name":"Shadowfax", "culture":"Horse", "factfile":"", "resistance":2, "age":28, "resilience":7, "ferocity":45, "magic":14, "height":65}
+{"name":"Haradrim", "culture":"Human", "factfile":"", "resistance":1, "age":29, "resilience":5, "ferocity":49, "magic":0, "height":55}
+{"name":"Theoden", "culture":"Human", "factfile":"", "resistance":2, "age":70, "resilience":8, "ferocity":60, "magic":1, "height":59}
+{"name":"Eomer", "culture":"Human", "factfile":"", "resistance":2, "age":30, "resilience":6, "ferocity":59, "magic":1, "height":59}
+{"name":"Eowyn", "culture":"Human", "factfile":"", "resistance":2, "age":26, "resilience":7, "ferocity":56, "magic":2, "height":58}
+{"name":"Rohirrim", "culture":"Human", "factfile":"", "resistance":2, "age":37, "resilience":7, "ferocity":48, "magic":0, "height":57}
+{"name":"Gorbag", "culture":"Orc", "factfile":"", "resistance":0, "age":1860, "resilience":4, "ferocity":53, "magic":1, "height":54}
+{"name":"Shagrat", "culture":"Uruk-Hai", "factfile":"", "resistance":0, "age":540, "resilience":6, "ferocity":59, "magic":0, "height":59}
+{"name":"Cirith Ungol Orcs", "culture":"Orc", "factfile":"", "resistance":0, "age":2000, "resilience":2, "ferocity":44, "magic":0, "height":53}
+{"name":"Cirith Ungol Uruk-Hai", "culture":"Uruk-Hai", "factfile":"", "resistance":1, "age":539, "resilience":3, "ferocity":58, "magic":0, "height":59}
+{"name":"Arwen", "culture":"Elf", "factfile":"", "resistance":2, "age":2777, "resilience":5, "ferocity":3, "magic":14, "height":511}
+{"name":"Mountain Troll", "culture":"Troll", "factfile":"", "resistance":1, "age":4000, "resilience":5, "ferocity":62, "magic":0, "height":145}
+{"name":"Mordor Orc", "culture":"Orc", "factfile":"", "resistance":1, "age":2000, "resilience":2, "ferocity":45, "magic":0, "height":51}
+{"name":"Gondorian Soldiers", "culture":"Human", "factfile":"", "resistance":2, "age":35, "resilience":7, "ferocity":49, "magic":0, "height":510}
+{"name":"Mumakil", "culture":"Elephant", "factfile":"", "resistance":2, "age":65, "resilience":7, "ferocity":55, "magic":0, "height":343}
+{"name":"Peregrin Took", "culture":"Hobbit", "factfile":"", "resistance":2, "age":28, "resilience":9, "ferocity":43, "magic":1, "height":4}
