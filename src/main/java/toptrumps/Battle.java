@@ -46,11 +46,6 @@ public class Battle {
         playerWinsCardPile(winner);
     }
 
-    private List<Card> getPlayerDeck(Player player){
-        List<Card> newDeck = new ArrayList<>(player.getDeck());
-        return newDeck;
-    }
-
     private void playerWinsCardPile(Player winner){
         for (Card c : cardPile) {
             winner.addCard(c);
@@ -70,7 +65,6 @@ public class Battle {
 
     private void removeAllTopCards(){
         for(Iterator<Player> pIterator = playerList.iterator(); pIterator.hasNext();){
-//            pIterator.next().getDeck().remove(0);
             Player player = pIterator.next();
             List<Card> newDeck = new ArrayList<>(player.getDeck().subList(1, player.getDeck().size()));
             player.setDeck(newDeck);
@@ -78,7 +72,7 @@ public class Battle {
     }
 
 
-    private void displayCardPile(){
+    private void displayCardPile(){ //TODO: remove in final version
         System.out.println("cardpile: " + cardPile.toString());
     }
 

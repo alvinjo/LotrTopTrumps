@@ -23,11 +23,6 @@ public class Card {
         this.height = height;
     }
 
-//    public static void main(String[] args) {
-//        String test = "hjA8las3a";
-//        System.out.println(test.matches("^[a-zA-Z0-9]{1,15}$"));
-//    }
-
     public Card(){
     }
 

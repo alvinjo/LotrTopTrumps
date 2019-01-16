@@ -1,6 +1,5 @@
 package toptrumps;
 
-import toptrumps.constants.Enums;
 import toptrumps.deck.Card;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -32,6 +31,7 @@ public class Player implements Runnable {
     }
 
 
+
     public void run() {
         login();
         waitForOtherPlayers();
@@ -46,52 +46,61 @@ public class Player implements Runnable {
             checkTurn();
             waitForOtherPlayers();
         }
+    }
 
+    private boolean login(){
+        username = Input.login(in, out);
+        game.addPlayerToList(this);
+        return true;
+    }
 
+    private void displayCards(){
+        deck.forEach(out::println);
     }
 
     private void checkTurn(){
         Player actingPlayer = game.getWhosTurnIsIt();
+        roundStartMessages();
+
         if(actingPlayer.equals(this)){
-            myTurn();
-            displayCurrentCard();
             cardAttribSelection();
-        }else{
-            out.println("\nNot my turn");
-            out.println(deck.size() + " cards");
-            displayCurrentCard();
-            notMyTurn(actingPlayer.getUsername());
         }
     }
 
-    public void howManyCards(){
-        int numOfCards = deck.size();
-        out.println(numOfCards + " cards");
+
+    public void roundStartMessages(){
+        Player actingPlayer = game.getWhosTurnIsIt();
+        if(actingPlayer.equals(this)){
+            myTurn();
+        }else{
+            notMyTurn(actingPlayer.getUsername());
+        }
+        howManyCards();
+        displayCurrentCard();
     }
 
     private void myTurn(){
         out.println("\nMy turn");
-        out.println(deck.size() + " cards");
     }
 
-    public void notMyTurn(String actingPlayer){
+    private void notMyTurn(String actingPlayer){
         out.println("\n" + actingPlayer + " is making a move");
     }
 
-
-    private void cardAttribSelection(){
-        getAttribInput();
+    private void howManyCards(){
+        out.println("You have " + deck.size() + " card/s");
     }
-
 
     private void displayCurrentCard(){
         out.println("\n" + deck.get(0));
     }
 
-    private void getAttribInput(){
+    private void cardAttribSelection(){
         String[] attributeAndCondition = Input.attribInput(in, out);
         battle(attributeAndCondition);
     }
+
+
 
     private void battle(String[] attributeAndCondition){
         battle = Battle.getInstance(game);
@@ -103,29 +112,22 @@ public class Player implements Runnable {
             game.turnFinished();
         }else{
             game.displayDrawResult();
-            displayCurrentCard();
             cardAttribSelection();
         }
     }
 
 
-    private void waitingForPlayerSelect(){
-        out.println("Another player is making their move...");
-    }
 
-    private void displayCards(){
-        deck.forEach(out::println);
-    }
 
     public void sendCardToBack(){
         deck.add(deck.get(0));
         deck.remove(0);
     }
 
-    private boolean login(){
-        username = Input.login(in, out);
-        game.addPlayerToList(this);
-        return true;
+
+
+    public void printOut(String s){
+        out.println(s);
     }
 
     private void waitForOtherPlayers(){
@@ -136,18 +138,8 @@ public class Player implements Runnable {
         }
     }
 
-
-    public void printOut(String s){
-        out.println(s);
-    }
-
-
     public String getUsername() {
         return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public List<Card> getDeck() {

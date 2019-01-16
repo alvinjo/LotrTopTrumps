@@ -10,7 +10,7 @@ import java.util.List;
 
 public class DeckBuilder {
 
-    public static List<Card> deck = new ArrayList<Card>();
+    private static List<Card> deck = new ArrayList<>();
 
     private static Gson gson = new Gson();
     private static BufferedReader br;

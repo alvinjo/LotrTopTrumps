@@ -4,7 +4,6 @@ import toptrumps.deck.Card;
 import toptrumps.deck.DeckBuilder;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CyclicBarrier;
 
@@ -17,7 +16,6 @@ public class Game {
     private boolean cardsDealt;
     private int whosTurnIsIt;
 
-
     public Game(int numOfPlayers){   //for selecting num of players.
 
     }
@@ -28,33 +26,13 @@ public class Game {
         playersConnected = 0;
         barrier = new CyclicBarrier(2);
         playersConnected = 0;
-        playerList = new ArrayList<Player>();
+        playerList = new ArrayList<>();
         cardsDealt = false;
         whosTurnIsIt = 0;
     }
 
-    public List<Player> getPlayerList(){
-        return playerList;
-    }
-
-    public void addPlayerToList(Player player){
-        playerList.add(player);
-    }
-
-    public static List<Card> getDeck() {
-        return deck;
-    }
-
-    public static CyclicBarrier getBarrier() {
-        return barrier;
-    }
-
-    public int getPlayersConnected() {
-        return playersConnected;
-    }
 
     public void displayWinnerOfRound(Player winner){
-
         for (Player p : playerList) {
             if(p.equals(winner)){
                 p.printOut("\nYou won! The cards have been added to your deck.");
@@ -65,22 +43,25 @@ public class Game {
     }
 
     public void displayDrawResult(){
-        String drawMessage = "\nOne or more players tied! Everyone's top card is added to the card pile.";
-        playerList.forEach(p -> p.printOut(drawMessage));
-        drawMessageForNonActingPlayers();
-//        playerList.forEach(Player::howManyCards);
-        for(Iterator<Player> pIterator = playerList.iterator(); pIterator.hasNext();) { //TODO: replace with foreach
-            pIterator.next().howManyCards();
-        }
-        playerList.forEach(p -> p.printOut("\n" + deck.get(0)));
+        drawMessage();
+        roundStartMessages();
     }
 
-    private void drawMessageForNonActingPlayers(){
-        for (Player p: playerList) {
-            if(!p.equals(getWhosTurnIsIt())){
-                p.notMyTurn(getWhosTurnIsIt().getUsername());
-            }
-        }
+    private void roundStartMessages(){
+        playerList.forEach(Player::roundStartMessages);
+    }
+
+    private void drawMessage(){
+        String drawMessage = "\nOne or more players tied! Everyone's top card is added to the card pile.";
+        playerList.forEach(p -> p.printOut(drawMessage));
+    }
+
+    public Player getWhosTurnIsIt() {
+        return playerList.get(whosTurnIsIt);
+    }
+
+    public void turnFinished(){
+        whosTurnIsIt = (whosTurnIsIt+1==playerList.size()) ? 0 : whosTurnIsIt+1;
     }
 
     public synchronized void dealCards(){
@@ -110,15 +91,21 @@ public class Game {
         return distribution;
     }
 
-    public boolean isCardsDealt() {
-        return cardsDealt;
+
+
+    public List<Player> getPlayerList(){
+        return playerList;
     }
 
-    public Player getWhosTurnIsIt() {
-        return playerList.get(whosTurnIsIt);
+    public void addPlayerToList(Player player){
+        playerList.add(player);
     }
 
-    public void turnFinished(){
-        whosTurnIsIt = (whosTurnIsIt+1==playerList.size()) ? 0 : whosTurnIsIt+1;
+    public static CyclicBarrier getBarrier() {
+        return barrier;
+    }
+
+    public int getPlayersConnected() {
+        return playersConnected;
     }
 }
