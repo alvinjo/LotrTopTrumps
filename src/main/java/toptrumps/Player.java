@@ -54,33 +54,38 @@ public class Player implements Runnable {
         Player actingPlayer = game.getWhosTurnIsIt();
         if(actingPlayer.equals(this)){
             myTurn();
+            displayCurrentCard();
+            cardAttribSelection();
         }else{
             out.println("\nNot my turn");
+            out.println(deck.size() + " cards");
+            displayCurrentCard();
             notMyTurn(actingPlayer.getUsername());
         }
+    }
+
+    public void howManyCards(){
+        int numOfCards = deck.size();
+        out.println(numOfCards + " cards");
     }
 
     private void myTurn(){
         out.println("\nMy turn");
         out.println(deck.size() + " cards");
-        cardAttribSelection();
     }
 
-    private void notMyTurn(String actingPlayer){
-        displayCurrentCard();
+    public void notMyTurn(String actingPlayer){
         out.println("\n" + actingPlayer + " is making a move");
-        out.println(deck.size() + " cards");
     }
 
 
     private void cardAttribSelection(){
-        displayCurrentCard();
         getAttribInput();
     }
 
 
     private void displayCurrentCard(){
-        out.println(deck.get(0));
+        out.println("\n" + deck.get(0));
     }
 
     private void getAttribInput(){
@@ -89,17 +94,17 @@ public class Player implements Runnable {
     }
 
     private void battle(String[] attributeAndCondition){
-        battle = new Battle(game);
-
+        battle = Battle.getInstance(game);
         Player winner = battle.getWinnerOrDraw(attributeAndCondition);
 
         boolean someoneWon = winner != null;
         if(someoneWon){
             game.displayWinnerOfRound(winner);
-//            game.turnFinished();
+            game.turnFinished();
         }else{
             game.displayDrawResult();
-//            cardAttribSelection();
+            displayCurrentCard();
+            cardAttribSelection();
         }
     }
 
@@ -155,5 +160,10 @@ public class Player implements Runnable {
 
     public void addCard(Card card){
         deck.add(card);
+    }
+
+    @Override
+    public String toString(){
+        return "Username: " + username;
     }
 }

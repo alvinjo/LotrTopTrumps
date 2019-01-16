@@ -3,27 +3,35 @@ package toptrumps;
 import toptrumps.deck.Card;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Battle {
 
     private List<Card> cardPile;
     private List<Player> playerList;
+    private static Battle battle;
 
-    public Battle(Game game){
+    private Battle(Game game){
         cardPile = new ArrayList<>();
-        playerList = game.getPlayerList();
+//        playerList = game.getPlayerList();
+        playerList = new CopyOnWriteArrayList<>(game.getPlayerList());
+        System.out.println("game.playerlist: " + game.getPlayerList().toString());
+    }
+
+    public static Battle getInstance(Game game){
+        if(battle != null){
+            return battle;
+        }else{
+            battle = new Battle(game);
+            return battle;
+        }
+
     }
 
     private synchronized void transferCards(Player winner){
-//        for (Player player : playerList) {
-//            if (!player.equals(winner)) {
-//                winner.addCard(player.getDeck().get(0));
-//                player.getDeck().remove(0);
-//            }
-//        }
-
         List<Card> newDeck;
         for (int i = 0; i < playerList.size(); i++) {
             Player loser = playerList.get(i);
@@ -47,25 +55,49 @@ public class Battle {
         for (Card c : cardPile) {
             winner.addCard(c);
         }
+        cardPile.clear();
     }
 
-    private void addCardsToPile(){
-        for (Player p: playerList) {
-            cardPile.add(p.getDeck().get(0));
-            p.getDeck().remove(0);
+    private synchronized void addCardsToPile(){
+        List<Card> newCardPile = new ArrayList<>(cardPile);
+        for (Iterator<Player> pIterator = playerList.iterator(); pIterator.hasNext();) {
+            newCardPile.add(pIterator.next().getDeck().get(0));
+        }
+        removeAllTopCards();
+        setCardPile(newCardPile);
+        displayCardPile();
+    }
+
+    private void removeAllTopCards(){
+        for(Iterator<Player> pIterator = playerList.iterator(); pIterator.hasNext();){
+//            pIterator.next().getDeck().remove(0);
+            Player player = pIterator.next();
+            List<Card> newDeck = new ArrayList<>(player.getDeck().subList(1, player.getDeck().size()));
+            player.setDeck(newDeck);
         }
     }
 
 
+    private void displayCardPile(){
+        System.out.println("cardpile: " + cardPile.toString());
+    }
+
+
     public Player getWinnerOrDraw(String[] attributeAndCondition){
+        System.out.println("plist size: " + playerList.size());
         Player winner = playerList.get(0);
         for (int i = 1; i < playerList.size(); i++) {
             int winnersStat = getValueOfAttribute(attributeAndCondition[0], winner);
             int enemyStat = getValueOfAttribute(attributeAndCondition[0], playerList.get(i));
+            System.out.print("#wcard " + winner.getDeck().get(0).getName());
+            System.out.println(" #ecard " + playerList.get(i).getDeck().get(0).getName());
+            System.out.println("##wstat " + winnersStat + " ##estat " + enemyStat);
             if(winnersStat == enemyStat){
+                System.out.println("its a draw");
                 addCardsToPile();
                 return null;
             }else if(highestWinsOrLowestWins(attributeAndCondition[1], winnersStat, enemyStat)){
+//                System.out.println("hlwins " + attributeAndCondition[0] + attributeAndCondition[1]  );
                 winner = playerList.get(i);
             }
         }
@@ -73,6 +105,7 @@ public class Battle {
         winner.sendCardToBack();
         return winner;
     }
+
 
     private static boolean highestWinsOrLowestWins(String condition, int winnersStat, int enemyStat){
         return checkConditionHigh(condition) ? winnersStat < enemyStat : winnersStat > enemyStat;
@@ -139,5 +172,8 @@ public class Battle {
         return player.getDeck().get(0).getHeight();
     }
 
+    private void setCardPile(List<Card> cardPile){
+        this.cardPile = cardPile;
+    }
 
 }

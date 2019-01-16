@@ -4,6 +4,7 @@ import toptrumps.deck.Card;
 import toptrumps.deck.DeckBuilder;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CyclicBarrier;
 
@@ -53,6 +54,7 @@ public class Game {
     }
 
     public void displayWinnerOfRound(Player winner){
+
         for (Player p : playerList) {
             if(p.equals(winner)){
                 p.printOut("\nYou won! The cards have been added to your deck.");
@@ -63,10 +65,23 @@ public class Game {
     }
 
     public void displayDrawResult(){
-        String drawMessage = "One or more players tied! Everyone's top card is added to the card pile.";
+        String drawMessage = "\nOne or more players tied! Everyone's top card is added to the card pile.";
         playerList.forEach(p -> p.printOut(drawMessage));
+        drawMessageForNonActingPlayers();
+//        playerList.forEach(Player::howManyCards);
+        for(Iterator<Player> pIterator = playerList.iterator(); pIterator.hasNext();) { //TODO: replace with foreach
+            pIterator.next().howManyCards();
+        }
+        playerList.forEach(p -> p.printOut("\n" + deck.get(0)));
     }
 
+    private void drawMessageForNonActingPlayers(){
+        for (Player p: playerList) {
+            if(!p.equals(getWhosTurnIsIt())){
+                p.notMyTurn(getWhosTurnIsIt().getUsername());
+            }
+        }
+    }
 
     public synchronized void dealCards(){
         if(!cardsDealt){
