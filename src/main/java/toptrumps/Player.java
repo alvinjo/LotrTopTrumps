@@ -46,6 +46,9 @@ public class Player implements Runnable {
             checkTurn();
             waitForOtherPlayers();
         }
+        out.println("########################################"); //TODO: remove
+        out.println("########   UNDER CONSTRUCTION   ########");
+        out.println("########################################");
     }
 
     private boolean login(){
@@ -107,7 +110,10 @@ public class Player implements Runnable {
         Player winner = battle.getWinnerOrDraw(attributeAndCondition);
 
         boolean someoneWon = winner != null;
+        Battle.displayBattleResultTable(attributeAndCondition, game);
         if(someoneWon){
+            battle.transferCards(winner);
+            winner.sendCardToBack();
             game.displayWinnerOfRound(winner);
             game.turnFinished();
         }else{

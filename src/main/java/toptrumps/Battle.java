@@ -1,11 +1,9 @@
 package toptrumps;
 
+import de.vandermeer.asciitable.AsciiTable;
+import dnl.utils.text.table.TextTable;
 import toptrumps.deck.Card;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Battle {
@@ -31,7 +29,7 @@ public class Battle {
 
     }
 
-    private synchronized void transferCards(Player winner){
+    public synchronized void transferCards(Player winner){
         List<Card> newDeck;
         for (int i = 0; i < playerList.size(); i++) {
             Player loser = playerList.get(i);
@@ -76,6 +74,9 @@ public class Battle {
         System.out.println("cardpile: " + cardPile.toString());
     }
 
+//            System.out.print("#wcard " + winner.getDeck().get(0).getName());
+//            System.out.println(" #ecard " + playerList.get(i).getDeck().get(0).getName());
+//            System.out.println("##wstat " + winnersStat + " ##estat " + enemyStat);
 
     public Player getWinnerOrDraw(String[] attributeAndCondition){
         System.out.println("plist size: " + playerList.size());
@@ -83,9 +84,7 @@ public class Battle {
         for (int i = 1; i < playerList.size(); i++) {
             int winnersStat = getValueOfAttribute(attributeAndCondition[0], winner);
             int enemyStat = getValueOfAttribute(attributeAndCondition[0], playerList.get(i));
-            System.out.print("#wcard " + winner.getDeck().get(0).getName());
-            System.out.println(" #ecard " + playerList.get(i).getDeck().get(0).getName());
-            System.out.println("##wstat " + winnersStat + " ##estat " + enemyStat);
+
             if(winnersStat == enemyStat){
                 System.out.println("its a draw");
                 addCardsToPile();
@@ -95,8 +94,8 @@ public class Battle {
                 winner = playerList.get(i);
             }
         }
-        transferCards(winner);
-        winner.sendCardToBack();
+
+
         return winner;
     }
 
@@ -145,6 +144,65 @@ public class Battle {
                  break;
         }
         return value;
+    }
+
+
+    public static void displayBattleResultTable(String[] attribCondition, Game game){
+        List<Player> players = game.getPlayerList();
+        for (Player player : players) {
+            player.printOut(battleResultTable(attribCondition, game));
+        }
+    }
+
+    private static String battleResultTable(String[] attribCondition, Game game){
+        List<Player> players = new ArrayList<>(game.getPlayerList());
+
+        players.sort((o1, o2) -> {
+            int winnerStat = getValueOfAttribute(attribCondition[0], o1);
+            int enemyStat = getValueOfAttribute(attribCondition[0], o2);
+            if(winnerStat == enemyStat){
+                return 0;
+            }
+            return (highestWinsOrLowestWins(attribCondition[1], winnerStat, enemyStat)) ? 1 : -1;
+        });
+
+        StringBuilder sb = new StringBuilder();
+        String attribStatHeader = getAttributeNameFromInput(attribCondition[0])
+                                + getConditionFromInput(attribCondition[1]) + "\n\r";
+        sb.append("\n\r").append("#################################");
+        sb.append("\n\r").append(String.format("%-17s%17s", "Player", attribStatHeader));
+        for (Player p : players) {
+            sb.append(String.format("%-17s%17d", p.getUsername(), getValueOfAttribute(attribCondition[0], p)));
+            sb.append("\n\r");
+        }
+        sb.append("#################################");
+        return sb.toString();
+    }
+
+    private static String getConditionFromInput(String conditionShortHand){
+        if(conditionShortHand.equals("l")||conditionShortHand.equals("low")){
+            return "(low)";
+        }
+        return "(high)";
+    }
+
+    private static String getAttributeNameFromInput(String attributeShortHand){
+        switch (attributeShortHand){
+            case "rs":
+                return "Resistance";
+            case "a":
+                return "Age";
+            case "rl":
+                return "Resilience";
+            case "f":
+                return "Ferocity";
+            case "m":
+                return "Magic";
+            case "h":
+                return "Height";
+            default:
+                return "?";                   // #####DO SOMETHING ELSE HERE
+        }
     }
 
     private static int getResilienceStat(Player player){

@@ -1,5 +1,7 @@
 package toptrumps;
 
+import toptrumps.constants.Constants;
+
 import java.io.PrintWriter;
 import java.util.Scanner;
 
@@ -17,23 +19,21 @@ public class Input {
 
     private static String loginInput(Scanner in, PrintWriter out){
         String username;
-        out.println("Enter username (1-15 alphanumeric characters): ");
+        out.println(Constants.LOGIN_INPUT_TEXT);
         username = in.nextLine();
 
-        if(username.matches("^[a-zA-Z0-9]{1,15}$")){
-            out.println("Username set to: " + username);
+        if(username.matches(Constants.USERNAME_REGEX)){
+            out.println(Constants.LOGIN_USERNAME_SET_TO + username);
             return username;
         }
-        out.println("Bad username");
+        out.println(Constants.LOGIN_BAD_USERNAME);
         return null;
     }
 
     public static String[] attribInput(Scanner in, PrintWriter out){
         String[] choice;
         do{
-            out.println("\nSelect attribute to compare");
-            out.println("Resistance(Rs) Age(A) Resilience(Rl) Ferocity(F) Magic(M) Height(H)");
-            out.println("Followed by a high(H) or low(L) condition, separated by a space e.g. Rs H ");
+            out.println(Constants.ATTRIBUTE_INPUT_TEXT);
             choice = attribInputValidation(in, out);
         }while(choice == null);
 
@@ -42,8 +42,8 @@ public class Input {
 
     private static String[] attribInputValidation(Scanner in, PrintWriter out){
         String[] choice = in.nextLine().toLowerCase().split(" ");
-        String attribRegex = "rs|rl|a|f|m|h";
-        String conditionRegex = "h|high|l|low";
+        String attribRegex = Constants.ATTRIBUTE_REGEX;
+        String conditionRegex = Constants.CONDITION_REGEX;
 
         try{
             if(choice[0].matches(attribRegex) && choice[1].matches(conditionRegex)){
@@ -51,7 +51,7 @@ public class Input {
             }
         }catch (IndexOutOfBoundsException ignored){
         }
-        out.println("Bad Input. Try again.");
+        out.println(Constants.ATTRIBUTE_BAD_INPUT);
         return null;
     }
 
