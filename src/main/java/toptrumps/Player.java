@@ -117,6 +117,7 @@ public class Player implements Runnable {
             game.displayWinnerOfRound(winner);
             game.turnFinished();
         }else{
+            battle.addCardsToPile();
             game.displayDrawResult();
             cardAttribSelection();
         }

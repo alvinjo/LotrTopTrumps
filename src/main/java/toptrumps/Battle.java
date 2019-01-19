@@ -1,7 +1,5 @@
 package toptrumps;
 
-import de.vandermeer.asciitable.AsciiTable;
-import dnl.utils.text.table.TextTable;
 import toptrumps.deck.Card;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -26,7 +24,6 @@ public class Battle {
             battle = new Battle(game);
             return battle;
         }
-
     }
 
     public synchronized void transferCards(Player winner){
@@ -51,7 +48,7 @@ public class Battle {
         cardPile.clear();
     }
 
-    private synchronized void addCardsToPile(){
+    public synchronized void addCardsToPile(){
         List<Card> newCardPile = new ArrayList<>(cardPile);
         for (Iterator<Player> pIterator = playerList.iterator(); pIterator.hasNext();) {
             newCardPile.add(pIterator.next().getDeck().get(0));
@@ -74,23 +71,15 @@ public class Battle {
         System.out.println("cardpile: " + cardPile.toString());
     }
 
-//            System.out.print("#wcard " + winner.getDeck().get(0).getName());
-//            System.out.println(" #ecard " + playerList.get(i).getDeck().get(0).getName());
-//            System.out.println("##wstat " + winnersStat + " ##estat " + enemyStat);
-
     public Player getWinnerOrDraw(String[] attributeAndCondition){
         System.out.println("plist size: " + playerList.size());
         Player winner = playerList.get(0);
         for (int i = 1; i < playerList.size(); i++) {
             int winnersStat = getValueOfAttribute(attributeAndCondition[0], winner);
             int enemyStat = getValueOfAttribute(attributeAndCondition[0], playerList.get(i));
-
             if(winnersStat == enemyStat){
-                System.out.println("its a draw");
-                addCardsToPile();
                 return null;
             }else if(highestWinsOrLowestWins(attributeAndCondition[1], winnersStat, enemyStat)){
-//                System.out.println("hlwins " + attributeAndCondition[0] + attributeAndCondition[1]  );
                 winner = playerList.get(i);
             }
         }
@@ -180,12 +169,6 @@ public class Battle {
         return sb.toString();
     }
 
-//    public static void main(String[] args) {
-//        String one = String.format("%-17s%-25s%-17s", "Player", "Card", "Magic(High)");
-//        String two = String.format("%-17s%-25s%-17d", "asdasd", "Eowyn", 8);
-//        System.out.println(one);
-//        System.out.println(two);
-//    }
 
     private static String getConditionFromInput(String conditionShortHand){
         if(conditionShortHand.equals("l")||conditionShortHand.equals("low")){

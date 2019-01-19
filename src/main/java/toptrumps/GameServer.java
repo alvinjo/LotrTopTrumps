@@ -10,9 +10,6 @@ public class GameServer {
 
     private static Game game = new Game();
 
-    //TODO: show results of battle. i.e. Your Gollum(3) lost a Resistance battle with Arwyn(5)
-    //TODO:                              You lost a Resistance battle. Your Gollum(5) against usernames Arwyn(5)
-
     //TODO: Refactor, check if method should be static
 
     public static void main(String[] args) {
