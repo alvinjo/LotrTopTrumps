@@ -14,7 +14,6 @@ public class Battle {
         cardPile = new ArrayList<>();
 //        playerList = game.getPlayerList();
         playerList = new CopyOnWriteArrayList<>(game.getPlayerList());
-        System.out.println("game.playerlist: " + game.getPlayerList().toString());
     }
 
     public static Battle getInstance(Game game){
@@ -72,7 +71,6 @@ public class Battle {
     }
 
     public Player getWinnerOrDraw(String[] attributeAndCondition){
-        System.out.println("plist size: " + playerList.size());
         Player winner = playerList.get(0);
         for (int i = 1; i < playerList.size(); i++) {
             int winnersStat = getValueOfAttribute(attributeAndCondition[0], winner);

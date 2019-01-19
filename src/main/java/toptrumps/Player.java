@@ -42,13 +42,13 @@ public class Player implements Runnable {
         // or until no more cards
         // players removed from playerList when deck is empty
 
-        for (int i = 0; i < 10; i++) {
+        while(game.getPlayerList().size()!=1) {
             checkTurn();
             waitForOtherPlayers();
         }
-        out.println("########################################"); //TODO: remove
-        out.println("########   UNDER CONSTRUCTION   ########");
-        out.println("########################################");
+
+        game.endGameMessage(this);
+
     }
 
     private boolean login(){
@@ -115,12 +115,14 @@ public class Player implements Runnable {
             battle.transferCards(winner);
             winner.sendCardToBack();
             game.displayWinnerOfRound(winner);
+            game.removeLosers();
             game.turnFinished();
         }else{
             battle.addCardsToPile();
             game.displayDrawResult();
-            cardAttribSelection();
+            game.removeLosers();
         }
+
     }
 
 

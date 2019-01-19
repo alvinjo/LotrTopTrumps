@@ -4,6 +4,7 @@ import toptrumps.deck.Card;
 import toptrumps.deck.DeckBuilder;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CyclicBarrier;
 
@@ -44,7 +45,7 @@ public class Game {
 
     public void displayDrawResult(){
         drawMessage();
-        roundStartMessages();
+//        roundStartMessages();
     }
 
     private void roundStartMessages(){
@@ -62,6 +63,24 @@ public class Game {
 
     public void turnFinished(){
         whosTurnIsIt = (whosTurnIsIt+1==playerList.size()) ? 0 : whosTurnIsIt+1;
+    }
+
+    public void removeLosers(){ //TODO: make method call
+        List<Player> players = new ArrayList<>(playerList);
+        for (Player p: players) {
+            System.out.println(p.getDeck().size());
+        }
+        players.removeIf(p -> p.getDeck().size()==0);
+        playerList = players;
+    }
+
+    public void endGameMessage(Player p){ //TODO: needed?
+        List<Player> players = new ArrayList<>(playerList);
+        if(p.equals(players.get(0))){
+            p.printOut("\n\r##### You win the game! #####");
+        }else{
+            p.printOut("\n\r##### You ran out of cards! #####");
+        }
     }
 
     public synchronized void dealCards(){
