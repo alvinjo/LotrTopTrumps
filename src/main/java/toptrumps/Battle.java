@@ -168,16 +168,24 @@ public class Battle {
 
         StringBuilder sb = new StringBuilder();
         String attribStatHeader = getAttributeNameFromInput(attribCondition[0])
-                                + getConditionFromInput(attribCondition[1]) + "\n\r";
-        sb.append("\n\r").append("#################################");
-        sb.append("\n\r").append(String.format("%-17s%17s", "Player", attribStatHeader));
+                                + getConditionFromInput(attribCondition[1]);
+        sb.append("\n\r").append("###########################################################");
+        sb.append("\n\r").append(String.format("%-17s%-25s%-17s", "Player", "Card" ,attribStatHeader));
         for (Player p : players) {
-            sb.append(String.format("%-17s%17d", p.getUsername(), getValueOfAttribute(attribCondition[0], p)));
             sb.append("\n\r");
+            sb.append(String.format("%-17s%-25s%-17d", p.getUsername(), p.getDeck().get(0).getName(),
+                    getValueOfAttribute(attribCondition[0], p)));
         }
-        sb.append("#################################");
+        sb.append("\n\r").append("###########################################################");
         return sb.toString();
     }
+
+//    public static void main(String[] args) {
+//        String one = String.format("%-17s%-25s%-17s", "Player", "Card", "Magic(High)");
+//        String two = String.format("%-17s%-25s%-17d", "asdasd", "Eowyn", 8);
+//        System.out.println(one);
+//        System.out.println(two);
+//    }
 
     private static String getConditionFromInput(String conditionShortHand){
         if(conditionShortHand.equals("l")||conditionShortHand.equals("low")){
