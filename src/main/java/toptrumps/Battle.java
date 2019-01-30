@@ -7,13 +7,15 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class Battle {
 
     private List<Card> cardPile;
-    private List<Player> playerList;
+//    private List<Player> playerList;
     private static Battle battle;
+    private Game game;
 
     private Battle(Game game){
         cardPile = new ArrayList<>();
+        this.game = game;
 //        playerList = game.getPlayerList();
-        playerList = new CopyOnWriteArrayList<>(game.getPlayerList());
+//        playerList = new CopyOnWriteArrayList<>(game.getPlayerList()); //TODO: change back?
     }
 
     public static Battle getInstance(Game game){
@@ -26,10 +28,11 @@ public class Battle {
     }
 
     public synchronized void transferCards(Player winner){
+        List<Player> activePlayers = game.getActivePlayers();
         List<Card> newDeck;
-        for (int i = 0; i < playerList.size(); i++) {
-            Player loser = playerList.get(i);
-            if(!playerList.get(i).equals(winner)){
+        for (int i = 0; i < activePlayers.size(); i++) {
+            Player loser = activePlayers.get(i);
+            if(!activePlayers.get(i).equals(winner)){
                 newDeck = new ArrayList<>(loser.getDeck());
 
                 winner.addCard(loser.getDeck().get(0));
@@ -48,8 +51,9 @@ public class Battle {
     }
 
     public synchronized void addCardsToPile(){
+        List<Player> activePlayers = game.getActivePlayers();
         List<Card> newCardPile = new ArrayList<>(cardPile);
-        for (Iterator<Player> pIterator = playerList.iterator(); pIterator.hasNext();) {
+        for (Iterator<Player> pIterator = activePlayers.iterator(); pIterator.hasNext();) {
             newCardPile.add(pIterator.next().getDeck().get(0));
         }
         removeAllTopCards();
@@ -58,7 +62,8 @@ public class Battle {
     }
 
     private void removeAllTopCards(){
-        for(Iterator<Player> pIterator = playerList.iterator(); pIterator.hasNext();){
+        List<Player> activePlayers = game.getActivePlayers();
+        for(Iterator<Player> pIterator = activePlayers.iterator(); pIterator.hasNext();){
             Player player = pIterator.next();
             List<Card> newDeck = new ArrayList<>(player.getDeck().subList(1, player.getDeck().size()));
             player.setDeck(newDeck);
@@ -71,7 +76,7 @@ public class Battle {
     }
 
     public Player getWinnerOrDraw(String[] attributeAndCondition){
-        Player winner = playerList.get(0);
+/*        Player winner = playerList.get(0);
         for (int i = 1; i < playerList.size(); i++) {
             int winnersStat = getValueOfAttribute(attributeAndCondition[0], winner);
             int enemyStat = getValueOfAttribute(attributeAndCondition[0], playerList.get(i));
@@ -80,8 +85,18 @@ public class Battle {
             }else if(highestWinsOrLowestWins(attributeAndCondition[1], winnersStat, enemyStat)){
                 winner = playerList.get(i);
             }
+        }*/
+        List<Player> activePlayers = game.getActivePlayers();
+        Player winner = activePlayers.get(0);
+        for (int i = 1; i < activePlayers.size(); i++) {
+            int winnersStat = getValueOfAttribute(attributeAndCondition[0], winner);
+            int enemyStat = getValueOfAttribute(attributeAndCondition[0], activePlayers.get(i));
+            if(winnersStat == enemyStat){
+                return null;
+            }else if(highestWinsOrLowestWins(attributeAndCondition[1], winnersStat, enemyStat)){
+                winner = activePlayers.get(i);
+            }
         }
-
 
         return winner;
     }
@@ -135,16 +150,16 @@ public class Battle {
 
 
     public static void displayBattleResultTable(String[] attribCondition, Game game){
-        List<Player> players = game.getPlayerList();
-        for (Player player : players) {
+        List<Player> activePlayers = game.getActivePlayers();
+        for (Player player : activePlayers) {
             player.printOut(battleResultTable(attribCondition, game));
         }
     }
 
     private static String battleResultTable(String[] attribCondition, Game game){
-        List<Player> players = new ArrayList<>(game.getPlayerList());
-
-        players.sort((o1, o2) -> {
+        List<Player> activePlayers = game.getActivePlayers();
+        System.out.println("activePlayers: " + activePlayers.toString());
+        activePlayers.sort((o1, o2) -> {
             int winnerStat = getValueOfAttribute(attribCondition[0], o1);
             int enemyStat = getValueOfAttribute(attribCondition[0], o2);
             if(winnerStat == enemyStat){
@@ -158,7 +173,7 @@ public class Battle {
                                 + getConditionFromInput(attribCondition[1]);
         sb.append("\n\r").append("###########################################################");
         sb.append("\n\r").append(String.format("%-17s%-25s%-17s", "Player", "Card" ,attribStatHeader));
-        for (Player p : players) {
+        for (Player p : activePlayers) {
             sb.append("\n\r");
             sb.append(String.format("%-17s%-25s%-17d", p.getUsername(), p.getDeck().get(0).getName(),
                     getValueOfAttribute(attribCondition[0], p)));
@@ -167,6 +182,17 @@ public class Battle {
         return sb.toString();
     }
 
+/*    private static List<Player> getActivePlayers(Game game){
+        List<Player> active = new ArrayList<>();
+        List<Player> playerList = game.getPlayerList();
+        for (int i = 0; i < playerList.size(); i++) {
+            System.out.println("checkactive: " + game.checkIfActive(i));
+            if(game.checkIfActive(i)){
+                active.add(playerList.get(i));
+            }
+        }
+        return active;
+    }*/
 
     private static String getConditionFromInput(String conditionShortHand){
         if(conditionShortHand.equals("l")||conditionShortHand.equals("low")){

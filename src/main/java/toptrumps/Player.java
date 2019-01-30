@@ -4,6 +4,7 @@ import toptrumps.deck.Card;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.BrokenBarrierException;
@@ -30,25 +31,23 @@ public class Player implements Runnable {
         }
     }
 
-
-
     public void run() {
         login();
         waitForOtherPlayers();
         game.dealCards();
         displayCards();
 
-        //for n times
-        // or until no more cards
-        // players removed from playerList when deck is empty
-
-        while(game.getPlayerList().size()!=1) {
-            checkTurn();
+        int roundCount = 0;
+        while(nobodyHasWonYet()){
+            System.out.println("### ROUND: " + roundCount);
+            if(stillInTheGame()){
+                checkTurn();
+            }
             waitForOtherPlayers();
+            roundCount++;
         }
 
         game.endGameMessage(this);
-
     }
 
     private boolean login(){
@@ -63,16 +62,27 @@ public class Player implements Runnable {
 
     private void checkTurn(){
         Player actingPlayer = game.getWhosTurnIsIt();
-        roundStartMessages();
+        roundStartMessages(actingPlayer);
 
         if(actingPlayer.equals(this)){
             cardAttribSelection();
         }
     }
 
+    private boolean stillInTheGame(){
+        out.println("still in the game: " + game.checkIfActive(this));
+        return game.checkIfActive(this);
+    }
 
-    public void roundStartMessages(){
-        Player actingPlayer = game.getWhosTurnIsIt();
+    private boolean nobodyHasWonYet(){
+//        return game.getNumOfPlayers() != 1;
+        System.out.println("active players: " + game.getNumOfActivePlayers());
+//        boolean onePlayerLeft = game.getNumOfActivePlayers() == 1;
+//        boolean nobodyHasWonYet = game.getNumOfActivePlayers() != 1;
+        return game.getNumOfActivePlayers() != 1;
+    }
+
+    public void roundStartMessages(Player actingPlayer){
         if(actingPlayer.equals(this)){
             myTurn();
         }else{
@@ -116,32 +126,27 @@ public class Player implements Runnable {
             winner.sendCardToBack();
             game.displayWinnerOfRound(winner);
             game.removeLosers();
-            game.turnFinished();
+            game.incrementWhosTurnIsIt();
         }else{
             battle.addCardsToPile();
             game.displayDrawResult();
             game.removeLosers();
         }
-
     }
 
-
-
-
-    public void sendCardToBack(){
+    private void sendCardToBack(){
         deck.add(deck.get(0));
         deck.remove(0);
     }
-
-
 
     public void printOut(String s){
         out.println(s);
     }
 
     private void waitForOtherPlayers(){
+        System.out.println("waiting");
         try{
-            game.getBarrier().await();
+            Game.getBarrier().await();
         } catch (InterruptedException | BrokenBarrierException e) {
             e.printStackTrace();
         }
@@ -160,7 +165,9 @@ public class Player implements Runnable {
     }
 
     public void addCard(Card card){
-        deck.add(card);
+        List<Card> newDeck = new ArrayList<>(deck);
+        newDeck.add(card);
+        setDeck(newDeck);
     }
 
     @Override
