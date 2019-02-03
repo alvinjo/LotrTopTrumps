@@ -2,20 +2,16 @@ package toptrumps;
 
 import toptrumps.deck.Card;
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Battle {
 
     private List<Card> cardPile;
-//    private List<Player> playerList;
     private static Battle battle;
     private Game game;
 
     private Battle(Game game){
         cardPile = new ArrayList<>();
         this.game = game;
-//        playerList = game.getPlayerList();
-//        playerList = new CopyOnWriteArrayList<>(game.getPlayerList()); //TODO: change back?
     }
 
     public static Battle getInstance(Game game){
@@ -53,12 +49,11 @@ public class Battle {
     public synchronized void addCardsToPile(){
         List<Player> activePlayers = game.getActivePlayers();
         List<Card> newCardPile = new ArrayList<>(cardPile);
-        for (Iterator<Player> pIterator = activePlayers.iterator(); pIterator.hasNext();) {
+        for(Iterator<Player> pIterator = activePlayers.iterator(); pIterator.hasNext();) {
             newCardPile.add(pIterator.next().getDeck().get(0));
         }
         removeAllTopCards();
         setCardPile(newCardPile);
-        displayCardPile();
     }
 
     private void removeAllTopCards(){
@@ -71,21 +66,7 @@ public class Battle {
     }
 
 
-    private void displayCardPile(){ //TODO: remove in final version
-        System.out.println("cardpile: " + cardPile.toString());
-    }
-
     public Player getWinnerOrDraw(String[] attributeAndCondition){
-/*        Player winner = playerList.get(0);
-        for (int i = 1; i < playerList.size(); i++) {
-            int winnersStat = getValueOfAttribute(attributeAndCondition[0], winner);
-            int enemyStat = getValueOfAttribute(attributeAndCondition[0], playerList.get(i));
-            if(winnersStat == enemyStat){
-                return null;
-            }else if(highestWinsOrLowestWins(attributeAndCondition[1], winnersStat, enemyStat)){
-                winner = playerList.get(i);
-            }
-        }*/
         List<Player> activePlayers = game.getActivePlayers();
         Player winner = activePlayers.get(0);
         for (int i = 1; i < activePlayers.size(); i++) {
@@ -158,7 +139,6 @@ public class Battle {
 
     private static String battleResultTable(String[] attribCondition, Game game){
         List<Player> activePlayers = game.getActivePlayers();
-        System.out.println("activePlayers: " + activePlayers.toString());
         activePlayers.sort((o1, o2) -> {
             int winnerStat = getValueOfAttribute(attribCondition[0], o1);
             int enemyStat = getValueOfAttribute(attribCondition[0], o2);
@@ -181,18 +161,6 @@ public class Battle {
         sb.append("\n\r").append("###########################################################");
         return sb.toString();
     }
-
-/*    private static List<Player> getActivePlayers(Game game){
-        List<Player> active = new ArrayList<>();
-        List<Player> playerList = game.getPlayerList();
-        for (int i = 0; i < playerList.size(); i++) {
-            System.out.println("checkactive: " + game.checkIfActive(i));
-            if(game.checkIfActive(i)){
-                active.add(playerList.get(i));
-            }
-        }
-        return active;
-    }*/
 
     private static String getConditionFromInput(String conditionShortHand){
         if(conditionShortHand.equals("l")||conditionShortHand.equals("low")){

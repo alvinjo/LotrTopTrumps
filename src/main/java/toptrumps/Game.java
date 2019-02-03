@@ -10,20 +10,17 @@ import java.util.stream.Stream;
 public class Game {
 
     private static List<Card> deck;
-    private int playersConnected;
     private static CyclicBarrier barrier;
     private List<Player> playerList;
     private boolean[] activePlayers;
     private boolean cardsDealt;
     private int whosTurnIsIt;
-    private int numOfPlayers;
+    private int newBarrierSize;
+    private boolean barrierChanged = false;
 
     public Game(int numOfPlayers){
-        this.numOfPlayers = numOfPlayers;
         deck = DeckBuilder.getDeck();
-        playersConnected = 0;
         barrier = new CyclicBarrier(numOfPlayers);
-        playersConnected = 0;
         playerList = new ArrayList<>();
         activePlayers = new boolean[numOfPlayers];
         initActivePlayers();
@@ -65,40 +62,29 @@ public class Game {
         List<Player> players = new ArrayList<>(playerList);
         for (int i = 0; i < players.size(); i++) {
             if(players.get(i).getDeck().size()==0){
-                System.out.println("someone removed");
                 activePlayers[i] = false;
-//                reduceBarrier();
+                barrierChanged = true;
             }
         }
-        System.out.println(Arrays.toString(activePlayers));
+        newBarrierSize = (int) getNumOfActivePlayers();
     }
 
     public void incrementWhosTurnIsIt(){
-        System.out.println("## method call");
-        System.out.println("whosturn: " + whosTurnIsIt);
         if(whosTurnIsIt + 1 == activePlayers.length){
-            System.out.println("endoflist");
             for (int i = 0; i < activePlayers.length; i++) {
                 if(activePlayers[i]){
-                    System.out.println("found active");
                     whosTurnIsIt = i;
-                    System.out.println(whosTurnIsIt);
                     break;
                 }
             }
         }else{
-            System.out.println("middleoflist");
             for (int i = whosTurnIsIt+1; i < activePlayers.length; i++) {
                 if(activePlayers[i]){
-                    System.out.println("foundactive");
                     whosTurnIsIt = i;
-                    System.out.println(whosTurnIsIt);
                     break;
                 }else{
-                    System.out.println("middle but did not find. loop from beginning");
                     for (int j = 0; j < activePlayers.length; j++) {
                         if(activePlayers[j]){
-                            System.out.println("found activ");
                             whosTurnIsIt = j;
                             break;
                         }
@@ -106,17 +92,10 @@ public class Game {
                 }
             }
         }
-        System.out.println("whosturn: " + whosTurnIsIt);
     }
 
 
     public void endGameMessage(Player p){ //TODO: needed?
-//        List<Player> players = new ArrayList<>(playerList);
-//        if(p.equals(players.get(0))){
-//            p.printOut("\n\r##### You win the game! #####");
-//        }else{
-//            p.printOut("\n\r##### You ran out of cards! #####");
-//        }
         if (checkIfActive(p)){
             p.printOut("\n\r##### You win the game! #####");
         }else{
@@ -152,10 +131,6 @@ public class Game {
     }
 
 
-    public List<Player> getPlayerList(){
-        return playerList;
-    }
-
     public void addPlayerToList(Player player){
         playerList.add(player);
     }
@@ -164,13 +139,11 @@ public class Game {
         return barrier;
     }
 
-    private void reduceBarrier(){
-        numOfPlayers--;
-        barrier = new CyclicBarrier(numOfPlayers);
-    }
-
-    public int getNumOfPlayers() {
-        return numOfPlayers;
+    public synchronized void makeBarrierChanges(){
+        if(barrierChanged){
+            barrier = new CyclicBarrier(newBarrierSize);
+        }
+        barrierChanged = false;
     }
 
     public List<Player> getActivePlayers(){
@@ -200,10 +173,6 @@ public class Game {
             }
         }
         return false;
-    }
-
-    public boolean checkIfActive(int i){
-        return activePlayers[i];
     }
 
 }

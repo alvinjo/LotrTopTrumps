@@ -21,8 +21,6 @@ public class Player implements Runnable {
     public Player(Game game, Socket socket){
         this.game = game;
 
-        System.out.println("thread created");
-
         try{
             in = new Scanner(socket.getInputStream());
             out = new PrintWriter(socket.getOutputStream(), true);
@@ -37,16 +35,11 @@ public class Player implements Runnable {
         game.dealCards();
         displayCards();
 
-        int roundCount = 0;
-        while(nobodyHasWonYet()){
-            System.out.println("### ROUND: " + roundCount);
-            if(stillInTheGame()){
-                checkTurn();
-            }
+        while(nobodyHasWonYet() && stillInTheGame()){
+            game.makeBarrierChanges();
+            checkTurn();
             waitForOtherPlayers();
-            roundCount++;
         }
-
         game.endGameMessage(this);
     }
 
@@ -70,19 +63,14 @@ public class Player implements Runnable {
     }
 
     private boolean stillInTheGame(){
-        out.println("still in the game: " + game.checkIfActive(this));
         return game.checkIfActive(this);
     }
 
     private boolean nobodyHasWonYet(){
-//        return game.getNumOfPlayers() != 1;
-        System.out.println("active players: " + game.getNumOfActivePlayers());
-//        boolean onePlayerLeft = game.getNumOfActivePlayers() == 1;
-//        boolean nobodyHasWonYet = game.getNumOfActivePlayers() != 1;
         return game.getNumOfActivePlayers() != 1;
     }
 
-    public void roundStartMessages(Player actingPlayer){
+    private void roundStartMessages(Player actingPlayer){
         if(actingPlayer.equals(this)){
             myTurn();
         }else{
@@ -144,7 +132,6 @@ public class Player implements Runnable {
     }
 
     private void waitForOtherPlayers(){
-        System.out.println("waiting");
         try{
             Game.getBarrier().await();
         } catch (InterruptedException | BrokenBarrierException e) {
