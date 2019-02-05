@@ -91,27 +91,26 @@ public class Battle {
         }
     }
 
-
     private static int getValueOfAttribute(String attrib, Player player){
         int value;
         switch(attrib){
             case "rs":
-                value = getResistanceStat(player);
+                value = Stats.getResistanceStat(player);
                 break;
             case "a":
-                value = getAgeStat(player);
+                value = Stats.getAgeStat(player);
                 break;
             case "rl":
-                value = getResilienceStat(player);
+                value = Stats.getResilienceStat(player);
                 break;
             case "f":
-                value = getFerocityStat(player);
+                value = Stats.getFerocityStat(player);
                 break;
             case "m":
-                value = getMagicStat(player);
+                value = Stats.getMagicStat(player);
                 break;
             case "h":
-                value = getHeightStat(player);
+                value = Stats.getHeightStat(player);
                 break;
              default:
                  value = -1;                        // #####DO SOMETHING ELSE HERE
@@ -187,25 +186,6 @@ public class Battle {
             default:
                 return "?";                   // #####DO SOMETHING ELSE HERE
         }
-    }
-
-    private static int getResilienceStat(Player player){
-        return player.getDeck().get(0).getResilience();
-    }
-    private static int getAgeStat(Player player){
-        return player.getDeck().get(0).getAge();
-    }
-    private static int getResistanceStat(Player player){
-        return player.getDeck().get(0).getResistance();
-    }
-    private static int getFerocityStat(Player player){
-        return player.getDeck().get(0).getFerocity();
-    }
-    private static int getMagicStat(Player player){
-        return player.getDeck().get(0).getMagic();
-    }
-    private static int getHeightStat(Player player){
-        return player.getDeck().get(0).getHeight();
     }
 
     private void setCardPile(List<Card> cardPile){
