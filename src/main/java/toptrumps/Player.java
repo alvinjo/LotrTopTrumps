@@ -32,21 +32,20 @@ public class Player implements Runnable {
     public void run() {
         login();
         waitForOtherPlayers();
-        game.dealCards();
+        Game.dealCards();
         displayCards();
 
         while(nobodyHasWonYet() && stillInTheGame()){
-            game.makeBarrierChanges();
+            Game.makeBarrierChanges();
             checkTurn();
             waitForOtherPlayers();
         }
-        game.endGameMessage(this);
+        Game.endGameMessage(this);
     }
 
-    private boolean login(){
+    private void login(){
         username = Input.login(in, out);
-        game.addPlayerToList(this);
-        return true;
+        Game.addPlayerToList(this);
     }
 
     private void displayCards(){
@@ -54,7 +53,7 @@ public class Player implements Runnable {
     }
 
     private void checkTurn(){
-        Player actingPlayer = game.getWhosTurnIsIt();
+        Player actingPlayer = Game.getWhosTurnIsIt();
         roundStartMessages(actingPlayer);
 
         if(actingPlayer.equals(this)){
@@ -63,11 +62,11 @@ public class Player implements Runnable {
     }
 
     private boolean stillInTheGame(){
-        return game.checkIfActive(this);
+        return Game.checkIfActive(this);
     }
 
     private boolean nobodyHasWonYet(){
-        return game.getNumOfActivePlayers() != 1;
+        return Game.getNumOfActivePlayers() != 1;
     }
 
     private void roundStartMessages(Player actingPlayer){
@@ -112,13 +111,13 @@ public class Player implements Runnable {
         if(someoneWon){
             battle.transferCards(winner);
             winner.sendCardToBack();
-            game.displayWinnerOfRound(winner);
-            game.removeLosers();
-            game.incrementWhosTurnIsIt();
+            Game.displayWinnerOfRound(winner);
+            Game.removeLosers();
+            Game.incrementWhosTurnIsIt();
         }else{
             battle.addCardsToPile();
-            game.displayDrawResult();
-            game.removeLosers();
+            Game.displayDrawResult();
+            Game.removeLosers();
         }
     }
 

@@ -47,7 +47,7 @@ public class Battle {
     }
 
     public synchronized void addCardsToPile(){
-        List<Player> activePlayers = game.getActivePlayers();
+        List<Player> activePlayers = Game.getActivePlayers();
         List<Card> newCardPile = new ArrayList<>(cardPile);
         for(Iterator<Player> pIterator = activePlayers.iterator(); pIterator.hasNext();) {
             newCardPile.add(pIterator.next().getDeck().get(0));
@@ -57,7 +57,7 @@ public class Battle {
     }
 
     private void removeAllTopCards(){
-        List<Player> activePlayers = game.getActivePlayers();
+        List<Player> activePlayers = Game.getActivePlayers();
         for(Iterator<Player> pIterator = activePlayers.iterator(); pIterator.hasNext();){
             Player player = pIterator.next();
             List<Card> newDeck = new ArrayList<>(player.getDeck().subList(1, player.getDeck().size()));
@@ -65,23 +65,14 @@ public class Battle {
         }
     }
 
-
-    public Player getWinnerOrDraw(String[] attributeAndCondition){
-        List<Player> activePlayers = game.getActivePlayers();
-        Player winner = activePlayers.get(0);
-        for (int i = 1; i < activePlayers.size(); i++) {
-            int winnersStat = getValueOfAttribute(attributeAndCondition[0], winner);
-            int enemyStat = getValueOfAttribute(attributeAndCondition[0], activePlayers.get(i));
-            if(winnersStat == enemyStat){
-                return null;
-            }else if(highestWinsOrLowestWins(attributeAndCondition[1], winnersStat, enemyStat)){
-                winner = activePlayers.get(i);
-            }
+    public Player getWinnerOrDraw(String[] attribAndCondition){
+        List<Player> players = sortPlayersByAttributeStat(attribAndCondition);
+        boolean topTwoPlayersTie = getValueOfAttribute(attribAndCondition[0], players.get(0)) == getValueOfAttribute(attribAndCondition[0], players.get(1));
+        if(topTwoPlayersTie){
+            return null;
         }
-
-        return winner;
+        return players.get(0);
     }
-
 
     private static boolean highestWinsOrLowestWins(String condition, int winnersStat, int enemyStat){
         return checkConditionHigh(condition) ? winnersStat < enemyStat : winnersStat > enemyStat;
@@ -131,22 +122,14 @@ public class Battle {
 
 
     public static void displayBattleResultTable(String[] attribCondition, Game game){
-        List<Player> activePlayers = game.getActivePlayers();
+        List<Player> activePlayers = Game.getActivePlayers();
         for (Player player : activePlayers) {
-            player.printOut(battleResultTable(attribCondition, game));
+            player.printOut(battleResultTable(attribCondition));
         }
     }
 
-    private static String battleResultTable(String[] attribCondition, Game game){
-        List<Player> activePlayers = game.getActivePlayers();
-        activePlayers.sort((o1, o2) -> {
-            int winnerStat = getValueOfAttribute(attribCondition[0], o1);
-            int enemyStat = getValueOfAttribute(attribCondition[0], o2);
-            if(winnerStat == enemyStat){
-                return 0;
-            }
-            return (highestWinsOrLowestWins(attribCondition[1], winnerStat, enemyStat)) ? 1 : -1;
-        });
+    private static String battleResultTable(String[] attribCondition){
+        List<Player> activePlayers = sortPlayersByAttributeStat(attribCondition);
 
         StringBuilder sb = new StringBuilder();
         String attribStatHeader = getAttributeNameFromInput(attribCondition[0])
@@ -160,6 +143,19 @@ public class Battle {
         }
         sb.append("\n\r").append("###########################################################");
         return sb.toString();
+    }
+
+    private static List<Player> sortPlayersByAttributeStat(String[] attribCondition){
+        List<Player> sortedPlayers = Game.getActivePlayers();
+        sortedPlayers.sort((o1, o2) -> {
+            int winnerStat = getValueOfAttribute(attribCondition[0], o1);
+            int enemyStat = getValueOfAttribute(attribCondition[0], o2);
+            if(winnerStat == enemyStat){
+                return 0;
+            }
+            return (highestWinsOrLowestWins(attribCondition[1], winnerStat, enemyStat)) ? 1 : -1;
+        });
+        return sortedPlayers;
     }
 
     private static String getConditionFromInput(String conditionShortHand){

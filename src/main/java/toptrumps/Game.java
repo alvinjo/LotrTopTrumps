@@ -11,12 +11,12 @@ public class Game {
 
     private static List<Card> deck;
     private static CyclicBarrier barrier;
-    private List<Player> playerList;
-    private boolean[] activePlayers;
-    private boolean cardsDealt;
-    private int whosTurnIsIt;
-    private int newBarrierSize;
-    private boolean barrierChanged = false;
+    private static List<Player> playerList;
+    private static boolean[] activePlayers;
+    private static boolean cardsDealt;
+    private static int whosTurnIsIt;
+    private static int newBarrierSize;
+    private static boolean barrierChanged = false;
 
     public Game(int numOfPlayers){
         deck = DeckBuilder.getDeck();
@@ -28,14 +28,14 @@ public class Game {
         whosTurnIsIt = 0;
     }
 
-    private void initActivePlayers(){
+    private static void initActivePlayers(){
         for (int i = 0; i < activePlayers.length; i++) {
             activePlayers[i] = true;
         }
     }
 
 
-    public void displayWinnerOfRound(Player winner){
+    public static void displayWinnerOfRound(Player winner){
         List<Player> activePlayers = getActivePlayers();
         for (Player p : activePlayers) {
             if(p.equals(winner)){
@@ -46,19 +46,19 @@ public class Game {
         }
     }
 
-    public void displayDrawResult(){
+    public static void displayDrawResult(){
         List<Player> activePlayers = getActivePlayers();
         String drawMessage = "\nOne or more players tied! Everyone's top card is added to the card pile.";
         activePlayers.forEach(p -> p.printOut(drawMessage));
     }
 
 
-    public Player getWhosTurnIsIt() {
+    public static Player getWhosTurnIsIt() {
         return playerList.get(whosTurnIsIt);
     }
 
 
-    public void removeLosers(){
+    public static void removeLosers(){
         List<Player> players = new ArrayList<>(playerList);
         for (int i = 0; i < players.size(); i++) {
             if(players.get(i).getDeck().size()==0){
@@ -69,7 +69,7 @@ public class Game {
         newBarrierSize = (int) getNumOfActivePlayers();
     }
 
-    public void incrementWhosTurnIsIt(){
+    public static void incrementWhosTurnIsIt(){
         if(whosTurnIsIt + 1 == activePlayers.length){
             for (int i = 0; i < activePlayers.length; i++) {
                 if(activePlayers[i]){
@@ -95,7 +95,7 @@ public class Game {
     }
 
 
-    public void endGameMessage(Player p){ //TODO: needed?
+    public static void endGameMessage(Player p){ //TODO: needed?
         if (checkIfActive(p)){
             p.printOut("\n\r##### You win the game! #####");
         }else{
@@ -103,7 +103,7 @@ public class Game {
         }
     }
 
-    public synchronized void dealCards(){
+    public static synchronized void dealCards(){
         if(!cardsDealt){
             int parts = playerList.size();
             int[] cardDistribution = calcDistribution(parts);
@@ -118,7 +118,7 @@ public class Game {
     }
 
 
-    private int[] calcDistribution(int parts){
+    private static int[] calcDistribution(int parts){
         int cards = deck.size();
         int[] distribution = new int[parts];
 
@@ -131,7 +131,7 @@ public class Game {
     }
 
 
-    public void addPlayerToList(Player player){
+    public static void addPlayerToList(Player player){
         playerList.add(player);
     }
 
@@ -139,14 +139,14 @@ public class Game {
         return barrier;
     }
 
-    public synchronized void makeBarrierChanges(){
+    public static synchronized void makeBarrierChanges(){
         if(barrierChanged){
             barrier = new CyclicBarrier(newBarrierSize);
         }
         barrierChanged = false;
     }
 
-    public List<Player> getActivePlayers(){
+    public static List<Player> getActivePlayers(){
         List<Player> active = new ArrayList<>();
         for (int i = 0; i < activePlayers.length; i++) {
             if(activePlayers[i]){
@@ -156,7 +156,7 @@ public class Game {
         return active;
     }
 
-    public long getNumOfActivePlayers(){
+    public static long getNumOfActivePlayers(){
         int count = 0;
         for (boolean activePlayer : activePlayers) {
             if (activePlayer) {
@@ -166,7 +166,7 @@ public class Game {
         return count;
     }
 
-    public boolean checkIfActive(Player player) {
+    public static boolean checkIfActive(Player player) {
         for (int i = 0; i < playerList.size(); i++) {
             if(playerList.get(i).equals(player)){
                 return activePlayers[i];
