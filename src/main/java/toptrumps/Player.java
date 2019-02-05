@@ -12,15 +12,12 @@ import java.util.concurrent.BrokenBarrierException;
 public class Player implements Runnable {
 
     private List<Card> deck;
-    private Game game;
     private Scanner in;
     private PrintWriter out;
     private String username;
     private Battle battle;
 
-    public Player(Game game, Socket socket){
-        this.game = game;
-
+    public Player(Socket socket){
         try{
             in = new Scanner(socket.getInputStream());
             out = new PrintWriter(socket.getOutputStream(), true);
@@ -103,11 +100,11 @@ public class Player implements Runnable {
 
 
     private void battle(String[] attributeAndCondition){
-        battle = Battle.getInstance(game);
+        battle = Battle.getInstance();
         Player winner = battle.getWinnerOrDraw(attributeAndCondition);
 
         boolean someoneWon = winner != null;
-        Battle.displayBattleResultTable(attributeAndCondition, game);
+        Battle.displayBattleResultTable(attributeAndCondition);
         if(someoneWon){
             battle.transferCards(winner);
             winner.sendCardToBack();

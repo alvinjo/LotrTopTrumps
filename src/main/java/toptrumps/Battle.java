@@ -3,28 +3,28 @@ package toptrumps;
 import toptrumps.deck.Card;
 import java.util.*;
 
+import static toptrumps.constants.Constants.*;
+
 public class Battle {
 
     private List<Card> cardPile;
     private static Battle battle;
-    private Game game;
 
-    private Battle(Game game){
+    private Battle(){
         cardPile = new ArrayList<>();
-        this.game = game;
     }
 
-    public static Battle getInstance(Game game){
+    public static Battle getInstance(){
         if(battle != null){
             return battle;
         }else{
-            battle = new Battle(game);
+            battle = new Battle();
             return battle;
         }
     }
 
     public synchronized void transferCards(Player winner){
-        List<Player> activePlayers = game.getActivePlayers();
+        List<Player> activePlayers = Game.getActivePlayers();
         List<Card> newDeck;
         for (int i = 0; i < activePlayers.size(); i++) {
             Player loser = activePlayers.get(i);
@@ -121,7 +121,7 @@ public class Battle {
     }
 
 
-    public static void displayBattleResultTable(String[] attribCondition, Game game){
+    public static void displayBattleResultTable(String[] attribCondition){
         List<Player> activePlayers = Game.getActivePlayers();
         for (Player player : activePlayers) {
             player.printOut(battleResultTable(attribCondition));
@@ -132,16 +132,15 @@ public class Battle {
         List<Player> activePlayers = sortPlayersByAttributeStat(attribCondition);
 
         StringBuilder sb = new StringBuilder();
-        String attribStatHeader = getAttributeNameFromInput(attribCondition[0])
-                                + getConditionFromInput(attribCondition[1]);
-        sb.append("\n\r").append("###########################################################");
-        sb.append("\n\r").append(String.format("%-17s%-25s%-17s", "Player", "Card" ,attribStatHeader));
+        String attribStatHeader = getAttributeNameFromInput(attribCondition[0]) + getConditionFromInput(attribCondition[1]);
+        sb.append("\n\r").append(TABLE_BORDER);
+        sb.append("\n\r").append(String.format(TABLE_HEADER_FORMAT, TABLE_HEADER_PLAYER, TABLE_HEADER_CARD ,attribStatHeader));
         for (Player p : activePlayers) {
             sb.append("\n\r");
-            sb.append(String.format("%-17s%-25s%-17d", p.getUsername(), p.getDeck().get(0).getName(),
+            sb.append(String.format(TABLE_FORMAT, p.getUsername(), p.getDeck().get(0).getName(),
                     getValueOfAttribute(attribCondition[0], p)));
         }
-        sb.append("\n\r").append("###########################################################");
+        sb.append("\n\r").append(TABLE_BORDER);
         return sb.toString();
     }
 
@@ -168,16 +167,22 @@ public class Battle {
     private static String getAttributeNameFromInput(String attributeShortHand){
         switch (attributeShortHand){
             case "rs":
+            case "resistance":
                 return "Resistance";
             case "a":
+            case "age":
                 return "Age";
             case "rl":
+            case "resilience":
                 return "Resilience";
             case "f":
+            case "ferocity":
                 return "Ferocity";
             case "m":
+            case "magic":
                 return "Magic";
             case "h":
+            case "height":
                 return "Height";
             default:
                 return "?";                   // #####DO SOMETHING ELSE HERE
