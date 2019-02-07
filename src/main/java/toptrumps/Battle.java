@@ -7,7 +7,7 @@ import static toptrumps.constants.Constants.*;
 
 public class Battle {
 
-    private List<Card> cardPile;
+    private static List<Card> cardPile;
     private static Battle battle;
 
     private Battle(){
@@ -23,7 +23,7 @@ public class Battle {
         }
     }
 
-    public synchronized void transferCards(Player winner){
+    public static synchronized void transferCards(Player winner){
         List<Player> activePlayers = Game.getActivePlayers();
         List<Card> newDeck;
         for (int i = 0; i < activePlayers.size(); i++) {
@@ -39,14 +39,14 @@ public class Battle {
         playerWinsCardPile(winner);
     }
 
-    private void playerWinsCardPile(Player winner){
+    private static void playerWinsCardPile(Player winner){
         for (Card c : cardPile) {
             winner.addCard(c);
         }
         cardPile.clear();
     }
 
-    public synchronized void addCardsToPile(){
+    public static synchronized void addCardsToPile(){
         List<Player> activePlayers = Game.getActivePlayers();
         List<Card> newCardPile = new ArrayList<>(cardPile);
         for(Iterator<Player> pIterator = activePlayers.iterator(); pIterator.hasNext();) {
@@ -56,7 +56,7 @@ public class Battle {
         setCardPile(newCardPile);
     }
 
-    private void removeAllTopCards(){
+    private static void removeAllTopCards(){
         List<Player> activePlayers = Game.getActivePlayers();
         for(Iterator<Player> pIterator = activePlayers.iterator(); pIterator.hasNext();){
             Player player = pIterator.next();
@@ -65,7 +65,7 @@ public class Battle {
         }
     }
 
-    public Player getWinnerOrDraw(String[] attribAndCondition){
+    public static Player getWinnerOrDraw(String[] attribAndCondition){
         List<Player> players = sortPlayersByAttributeStat(attribAndCondition);
         boolean topTwoPlayersTie = getValueOfAttribute(attribAndCondition[0], players.get(0)) == getValueOfAttribute(attribAndCondition[0], players.get(1));
         if(topTwoPlayersTie){
@@ -93,27 +93,33 @@ public class Battle {
 
     private static int getValueOfAttribute(String attrib, Player player){
         int value;
-        switch(attrib){
+        switch(attrib.toLowerCase()){
             case "rs":
+            case "resistance":
                 value = Stats.getResistanceStat(player);
                 break;
             case "a":
+            case "age":
                 value = Stats.getAgeStat(player);
                 break;
             case "rl":
+            case "resilience":
                 value = Stats.getResilienceStat(player);
                 break;
             case "f":
+            case "ferocity":
                 value = Stats.getFerocityStat(player);
                 break;
             case "m":
+            case "magic":
                 value = Stats.getMagicStat(player);
                 break;
             case "h":
+            case "height":
                 value = Stats.getHeightStat(player);
                 break;
              default:
-                 value = -1;                        // #####DO SOMETHING ELSE HERE
+                 value = Stats.getResistanceStat(player);                        // #####DO SOMETHING ELSE HERE
                  break;
         }
         return value;
@@ -188,8 +194,8 @@ public class Battle {
         }
     }
 
-    private void setCardPile(List<Card> cardPile){
-        this.cardPile = cardPile;
+    private static void setCardPile(List<Card> cardPile){
+        Battle.cardPile = cardPile;
     }
 
 }

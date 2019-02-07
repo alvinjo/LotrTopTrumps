@@ -115,6 +115,9 @@ public class Player implements Runnable {
             battle.addCardsToPile();
             Game.displayDrawResult();
             Game.removeLosers();
+            if(!Game.checkIfActive(this)){
+                Game.incrementWhosTurnIsIt();
+            }
         }
     }
 

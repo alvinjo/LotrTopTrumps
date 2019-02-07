@@ -8,7 +8,7 @@ import static toptrumps.constants.Constants.SERVER_PORT;
 
 public class GameServer {
 
-    private static Game game = new Game(3);
+    private static Game game = new Game(2);
 
     //TODO: Refactor, check if method should be static. check if classes should be instances or util
     //TODO: Remove wandering TODO comments. Remove comments. Remove print statements.
@@ -29,7 +29,7 @@ public class GameServer {
             while(true){
                 Socket socket = server.accept();
                 System.out.println("Player connected");
-                Player player = new Player(game, socket);
+                Player player = new Player(socket);
                 new Thread(player).start();
             }
 
