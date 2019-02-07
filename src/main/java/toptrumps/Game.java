@@ -17,6 +17,7 @@ public class Game {
     private static int whosTurnIsIt;
     private static int newBarrierSize;
     private static boolean barrierChanged = false;
+    private static int roundNumber;
 
     public Game(int numOfPlayers){
         deck = DeckBuilder.getDeck();
@@ -26,6 +27,7 @@ public class Game {
         initActivePlayers();
         cardsDealt = false;
         whosTurnIsIt = 0;
+        roundNumber = 0;
     }
 
     private static void initActivePlayers(){
@@ -95,11 +97,31 @@ public class Game {
     }
 
 
-    public static void endGameMessage(Player p){ //TODO: needed?
-        if (checkIfActive(p)){
+    public static void endGameMessage(Player p){
+        if(getActivePlayers().size() > 1){
+            if(getPlayerWithMostCards() != null){
+              p.printOut("\n\r##### It was a draw! #####");
+            }
+        }else if (checkIfActive(p)){
             p.printOut("\n\r##### You win the game! #####");
         }else{
             p.printOut("\n\r##### You ran out of cards! #####");
+        }
+    }
+
+    private static Player getPlayerWithMostCards(){
+        List<Player> players = getActivePlayers();
+        players.sort((p1, p2) -> {
+            if(p1.getDeck().size() == p2.getDeck().size()){
+                return 0;
+            }
+            return (p1.getDeck().size() > p2.getDeck().size()) ? 1 : -1;
+        });
+
+        if(players.get(0).getDeck().size() == players.get(1).getDeck().size()){
+            return null;
+        }else{
+            return players.get(0);
         }
     }
 
@@ -173,6 +195,14 @@ public class Game {
             }
         }
         return false;
+    }
+
+    public static int getRoundNumber(){
+        return roundNumber;
+    }
+
+    public static void incrementRoundNumber(){
+        roundNumber++;
     }
 
 }

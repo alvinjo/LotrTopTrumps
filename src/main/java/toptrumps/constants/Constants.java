@@ -23,4 +23,7 @@ public class Constants {
     public static final String TABLE_HEADER_CARD = "Card";
     public static final String TABLE_FORMAT = "%-17s%-25s%-17d";
 
+    //Player Class
+    public static final int ROUND_LIMIT = 20;
+
 }

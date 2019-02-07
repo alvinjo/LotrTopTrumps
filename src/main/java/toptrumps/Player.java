@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.BrokenBarrierException;
 
+import static toptrumps.constants.Constants.ROUND_LIMIT;
+
 public class Player implements Runnable {
 
     private List<Card> deck;
@@ -32,7 +34,7 @@ public class Player implements Runnable {
         Game.dealCards();
         displayCards();
 
-        while(nobodyHasWonYet() && stillInTheGame()){
+        while(nobodyHasWonYet() && stillInTheGame() && roundLimitNotReached()){
             Game.makeBarrierChanges();
             checkTurn();
             waitForOtherPlayers();
@@ -54,6 +56,7 @@ public class Player implements Runnable {
         roundStartMessages(actingPlayer);
 
         if(actingPlayer.equals(this)){
+            Game.incrementRoundNumber();
             cardAttribSelection();
         }
     }
@@ -64,6 +67,10 @@ public class Player implements Runnable {
 
     private boolean nobodyHasWonYet(){
         return Game.getNumOfActivePlayers() != 1;
+    }
+
+    private boolean roundLimitNotReached(){
+        return Game.getRoundNumber() != ROUND_LIMIT;
     }
 
     private void roundStartMessages(Player actingPlayer){
