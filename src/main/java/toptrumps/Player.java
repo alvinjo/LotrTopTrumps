@@ -1,6 +1,8 @@
 package toptrumps;
 
 import toptrumps.deck.Card;
+import toptrumps.deck.DeckManager;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -17,7 +19,6 @@ public class Player implements Runnable {
     private Scanner in;
     private PrintWriter out;
     private String username;
-    private Battle battle;
 
     public Player(Socket socket){
         try{
@@ -107,19 +108,19 @@ public class Player implements Runnable {
 
 
     private void battle(String[] attributeAndCondition){
-        battle = Battle.getInstance();
-        Player winner = battle.getWinnerOrDraw(attributeAndCondition);
+        Battle.getInstance();
+        Player winner = Battle.getWinnerOrDraw(attributeAndCondition);
 
         boolean someoneWon = winner != null;
         Battle.displayBattleResultTable(attributeAndCondition);
         if(someoneWon){
-            battle.transferCards(winner);
+            Battle.transferCards(winner);
             winner.sendCardToBack();
             Game.displayWinnerOfRound(winner);
             Game.removeLosers();
             Game.incrementWhosTurnIsIt();
         }else{
-            battle.addCardsToPile();
+            Battle.addCardsToPile();
             Game.displayDrawResult();
             Game.removeLosers();
             if(!Game.checkIfActive(this)){

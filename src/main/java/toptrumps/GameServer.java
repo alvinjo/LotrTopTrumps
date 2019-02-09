@@ -8,7 +8,7 @@ import static toptrumps.constants.Constants.SERVER_PORT;
 
 public class GameServer {
 
-    private static Game game = new Game(2);
+    private static Game game = new Game(4);
 
     //TODO: Refactor, check if method should be static. check if classes should be instances or util
     //TODO: Remove wandering TODO comments. Remove comments. Remove print statements.
@@ -34,7 +34,6 @@ public class GameServer {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
 }

@@ -1,33 +1,35 @@
 package toptrumps;
 
-import toptrumps.deck.Card;
 import toptrumps.deck.DeckBuilder;
+import toptrumps.deck.DeckManager;
 
 import java.util.*;
 import java.util.concurrent.CyclicBarrier;
-import java.util.stream.Stream;
+
+import static toptrumps.constants.Constants.*;
 
 public class Game {
 
-    private static List<Card> deck;
     private static CyclicBarrier barrier;
     private static List<Player> playerList;
     private static boolean[] activePlayers;
-    private static boolean cardsDealt;
     private static int whosTurnIsIt;
     private static int newBarrierSize;
     private static boolean barrierChanged = false;
     private static int roundNumber;
 
     public Game(int numOfPlayers){
-        deck = DeckBuilder.getDeck();
+        DeckBuilder.getDeck();
         barrier = new CyclicBarrier(numOfPlayers);
         playerList = new ArrayList<>();
         activePlayers = new boolean[numOfPlayers];
         initActivePlayers();
-        cardsDealt = false;
         whosTurnIsIt = 0;
         roundNumber = 0;
+    }
+
+    public static void dealCards(){
+        DeckManager.dealCards(playerList);
     }
 
     private static void initActivePlayers(){
@@ -41,17 +43,16 @@ public class Game {
         List<Player> activePlayers = getActivePlayers();
         for (Player p : activePlayers) {
             if(p.equals(winner)){
-                p.printOut("\nYou won! The cards have been added to your deck.");
+                p.printOut(ROUND_WIN_MESSAGE);
             }else{
-                p.printOut("\n" + winner.getUsername() + " won! You lost a card!");
+                p.printOut("\n\r" + winner.getUsername() + " won! You lost a card!");
             }
         }
     }
 
     public static void displayDrawResult(){
         List<Player> activePlayers = getActivePlayers();
-        String drawMessage = "\nOne or more players tied! Everyone's top card is added to the card pile.";
-        activePlayers.forEach(p -> p.printOut(drawMessage));
+        activePlayers.forEach(p -> p.printOut(ROUND_DRAW_MESSAGE));
     }
 
 
@@ -98,58 +99,26 @@ public class Game {
 
 
     public static void endGameMessage(Player p){
-        if(getActivePlayers().size() > 1){
-            if(getPlayerWithMostCards() != null){
-              p.printOut("\n\r##### It was a draw! #####");
-            }
-        }else if (checkIfActive(p)){
-            p.printOut("\n\r##### You win the game! #####");
+        if(getActivePlayers().size() > 1 && getRoundNumber() == ROUND_LIMIT){
+            drawMessage(p);
+          }else if (checkIfActive(p)){
+            p.printOut(WIN_MESSAGE);
         }else{
-            p.printOut("\n\r##### You ran out of cards! #####");
+            p.printOut(LOSE_MESSAGE);
         }
     }
 
-    private static Player getPlayerWithMostCards(){
-        List<Player> players = getActivePlayers();
-        players.sort((p1, p2) -> {
-            if(p1.getDeck().size() == p2.getDeck().size()){
-                return 0;
+    private static void drawMessage(Player p){
+        p.printOut(ROUND_LIMIT_MESSAGE);
+        Player winner = DeckManager.getPlayerWithMostCards();
+        if(winner != null){
+            if(winner == p){
+                p.printOut(WIN_MESSAGE);
             }
-            return (p1.getDeck().size() > p2.getDeck().size()) ? 1 : -1;
-        });
-
-        if(players.get(0).getDeck().size() == players.get(1).getDeck().size()){
-            return null;
+            p.printOut("\n\r##### " + winner.getUsername() + " won #####");
         }else{
-            return players.get(0);
+            p.printOut(DRAW_MESSAGE);
         }
-    }
-
-    public static synchronized void dealCards(){
-        if(!cardsDealt){
-            int parts = playerList.size();
-            int[] cardDistribution = calcDistribution(parts);
-
-            Collections.shuffle(deck);
-            for (int i = 0; i < parts; i++) {
-                playerList.get(i).setDeck(deck.subList(0, cardDistribution[i]));
-                deck = deck.subList(cardDistribution[i], deck.size());
-            }
-        }
-        cardsDealt = true;
-    }
-
-
-    private static int[] calcDistribution(int parts){
-        int cards = deck.size();
-        int[] distribution = new int[parts];
-
-        for (int i = 0; i < distribution.length; i++) {
-            distribution[i] = cards/parts;
-            cards -= cards/parts;
-            parts--;
-        }
-        return distribution;
     }
 
 
