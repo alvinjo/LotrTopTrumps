@@ -1,7 +1,7 @@
 package toptrumps.deck;
 
-import toptrumps.Game;
-import toptrumps.Player;
+import toptrumps.game.Game;
+import toptrumps.player.Player;
 
 import java.util.Collections;
 import java.util.List;
@@ -12,6 +12,7 @@ public class DeckManager {
     private static List<Card> deck;
 
     public static synchronized void dealCards(List<Player> playerList){
+        deck = DeckBuilder.getDeck();
         if(!cardsDealt){
             int parts = playerList.size();
             int[] cardDistribution = calcDistribution(parts);
@@ -43,7 +44,7 @@ public class DeckManager {
             if(p1.getDeck().size() == p2.getDeck().size()){
                 return 0;
             }
-            return (p1.getDeck().size() > p2.getDeck().size()) ? 1 : -1;
+            return (p1.getDeck().size() > p2.getDeck().size()) ? -1 : 1;
         });
 
         if(players.get(0).getDeck().size() == players.get(1).getDeck().size()){

@@ -104,5 +104,4 @@ public class Card {
                 + ", Age:"+age + ", Resilience:"+resilience + ", Ferocity:"+ferocity + ", Magic:"+magic
                 + ", Height:"+height + "}";
     }
-
 }

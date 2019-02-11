@@ -1,7 +1,7 @@
-package toptrumps;
+package toptrumps.game;
 
-import toptrumps.deck.DeckBuilder;
 import toptrumps.deck.DeckManager;
+import toptrumps.player.Player;
 
 import java.util.*;
 import java.util.concurrent.CyclicBarrier;
@@ -15,27 +15,21 @@ public class Game {
     private static boolean[] activePlayers;
     private static int whosTurnIsIt;
     private static int newBarrierSize;
-    private static boolean barrierChanged = false;
+    private static boolean barrierChanged;
     private static int roundNumber;
 
     public Game(int numOfPlayers){
-        DeckBuilder.getDeck();
         barrier = new CyclicBarrier(numOfPlayers);
+        barrierChanged = false;
         playerList = new ArrayList<>();
         activePlayers = new boolean[numOfPlayers];
-        initActivePlayers();
+        Arrays.fill(activePlayers, Boolean.TRUE);
         whosTurnIsIt = 0;
         roundNumber = 0;
     }
 
     public static void dealCards(){
         DeckManager.dealCards(playerList);
-    }
-
-    private static void initActivePlayers(){
-        for (int i = 0; i < activePlayers.length; i++) {
-            activePlayers[i] = true;
-        }
     }
 
 
@@ -45,7 +39,7 @@ public class Game {
             if(p.equals(winner)){
                 p.printOut(ROUND_WIN_MESSAGE);
             }else{
-                p.printOut("\n\r" + winner.getUsername() + " won! You lost a card!");
+                p.printOut(ROUND_LOSE_MESSAGE(winner.getUsername()));
             }
         }
     }
@@ -98,30 +92,6 @@ public class Game {
     }
 
 
-    public static void endGameMessage(Player p){
-        if(getActivePlayers().size() > 1 && getRoundNumber() == ROUND_LIMIT){
-            drawMessage(p);
-          }else if (checkIfActive(p)){
-            p.printOut(WIN_MESSAGE);
-        }else{
-            p.printOut(LOSE_MESSAGE);
-        }
-    }
-
-    private static void drawMessage(Player p){
-        p.printOut(ROUND_LIMIT_MESSAGE);
-        Player winner = DeckManager.getPlayerWithMostCards();
-        if(winner != null){
-            if(winner == p){
-                p.printOut(WIN_MESSAGE);
-            }
-            p.printOut("\n\r##### " + winner.getUsername() + " won #####");
-        }else{
-            p.printOut(DRAW_MESSAGE);
-        }
-    }
-
-
     public static void addPlayerToList(Player player){
         playerList.add(player);
     }
@@ -166,8 +136,8 @@ public class Game {
         return false;
     }
 
-    public static int getRoundNumber(){
-        return roundNumber;
+    public static boolean roundLimitNotReached(){
+        return roundNumber != ROUND_LIMIT;
     }
 
     public static void incrementRoundNumber(){

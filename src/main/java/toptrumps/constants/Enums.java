@@ -2,12 +2,10 @@ package toptrumps.constants;
 
 public class Enums {
 
-    public enum Attribute {Resistance, Age, Resilience, Ferocity, Magic, Height}
+    public enum Attribute {RESISTANCE, AGE, RESILIENCE, FEROCITY, MAGIC, HEIGHT}
 
-    public enum BattleResult {Success, Draw, InvalidInput}
+    public enum BattleResult {SUCCESS, DRAW, INVALID_INPUT}
 
-    public enum InputType {Login, AttribInput}
-
-    //should be all caps
+    public enum InputType {LOGIN, ATTRIB_INPUT}
 
 }

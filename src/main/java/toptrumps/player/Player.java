@@ -1,8 +1,7 @@
-package toptrumps;
+package toptrumps.player;
 
+import toptrumps.game.*;
 import toptrumps.deck.Card;
-import toptrumps.deck.DeckManager;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -10,8 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.BrokenBarrierException;
-
-import static toptrumps.constants.Constants.ROUND_LIMIT;
+import static toptrumps.constants.Constants.*;
+import static toptrumps.game.Game.roundLimitNotReached;
 
 public class Player implements Runnable {
 
@@ -40,7 +39,7 @@ public class Player implements Runnable {
             checkTurn();
             waitForOtherPlayers();
         }
-        Game.endGameMessage(this);
+        EndGame.messages(this);
     }
 
     private void login(){
@@ -70,10 +69,6 @@ public class Player implements Runnable {
         return Game.getNumOfActivePlayers() != 1;
     }
 
-    private boolean roundLimitNotReached(){
-        return Game.getRoundNumber() != ROUND_LIMIT;
-    }
-
     private void roundStartMessages(Player actingPlayer){
         if(actingPlayer.equals(this)){
             myTurn();
@@ -85,19 +80,19 @@ public class Player implements Runnable {
     }
 
     private void myTurn(){
-        out.println("\nMy turn");
+        out.println(MY_TURN);
     }
 
     private void notMyTurn(String actingPlayer){
-        out.println("\n" + actingPlayer + " is making a move");
+        out.println(NOT_MY_TURN(actingPlayer));
     }
 
     private void howManyCards(){
-        out.println("You have " + deck.size() + " card/s");
+        out.println(HOW_MANY_CARDS(deck.size()));
     }
 
     private void displayCurrentCard(){
-        out.println("\n" + deck.get(0));
+        out.println("\n\r" + deck.get(0));
     }
 
     private void cardAttribSelection(){
@@ -105,10 +100,7 @@ public class Player implements Runnable {
         battle(attributeAndCondition);
     }
 
-
-
     private void battle(String[] attributeAndCondition){
-        Battle.getInstance();
         Player winner = Battle.getWinnerOrDraw(attributeAndCondition);
 
         boolean someoneWon = winner != null;

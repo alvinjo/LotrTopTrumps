@@ -1,4 +1,4 @@
-package toptrumps;
+package toptrumps.player;
 
 import toptrumps.constants.Constants;
 
@@ -54,6 +54,5 @@ public class Input {
         out.println(Constants.ATTRIBUTE_BAD_INPUT);
         return null;
     }
-
 
 }

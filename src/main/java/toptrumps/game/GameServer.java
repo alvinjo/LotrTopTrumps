@@ -1,4 +1,6 @@
-package toptrumps;
+package toptrumps.game;
+
+import toptrumps.player.Player;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -13,10 +15,10 @@ public class GameServer {
     //TODO: Refactor, check if method should be static. check if classes should be instances or util
     //TODO: Remove wandering TODO comments. Remove comments. Remove print statements.
 
-    //TODO: Check if endgame works with more than two players
     //TODO: Display who won to all players? Keep a untouched player list to continue displaying messages?
     //TODO: Move game methods from Player class to Game class. Put methods in correct classes
     //TODO: Game should end after certain number of rounds if no one has won. Player with most cards wins.
+    //TODO: At a draw scenario with no winners, show table with players and deck sizes
 
 
     public static void main(String[] args) {

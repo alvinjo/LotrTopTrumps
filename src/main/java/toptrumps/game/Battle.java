@@ -1,27 +1,16 @@
-package toptrumps;
+package toptrumps.game;
 
 import toptrumps.deck.Card;
+import toptrumps.player.Player;
+import toptrumps.player.Stats;
+
 import java.util.*;
 
 import static toptrumps.constants.Constants.*;
 
 public class Battle {
 
-    private static List<Card> cardPile;
-    private static Battle battle;
-
-    private Battle(){
-        cardPile = new ArrayList<>();
-    }
-
-    public static Battle getInstance(){
-        if(battle != null){
-            return battle;
-        }else{
-            battle = new Battle();
-            return battle;
-        }
-    }
+    private static List<Card> cardPile = new ArrayList<>();
 
     public static synchronized void transferCards(Player winner){
         List<Player> activePlayers = Game.getActivePlayers();
@@ -67,7 +56,7 @@ public class Battle {
 
     public static Player getWinnerOrDraw(String[] attribAndCondition){
         List<Player> players = sortPlayersByAttributeStat(attribAndCondition);
-        boolean topTwoPlayersTie = getValueOfAttribute(attribAndCondition[0], players.get(0)) == getValueOfAttribute(attribAndCondition[0], players.get(1));
+        boolean topTwoPlayersTie = (int) getAttribValueOrName(attribAndCondition[0], players.get(0)) == (int) getAttribValueOrName(attribAndCondition[0], players.get(1));
         if(topTwoPlayersTie){
             return null;
         }
@@ -91,38 +80,30 @@ public class Battle {
         }
     }
 
-    private static int getValueOfAttribute(String attrib, Player player){
-        int value;
-        switch(attrib.toLowerCase()){
+
+    private static Object getAttribValueOrName(String attrib, Player player){
+        switch(attrib){
             case "rs":
             case "resistance":
-                value = Stats.getResistanceStat(player);
-                break;
+                return (player != null) ? Stats.getResistanceStat(player) : WORD_RESISTANCE;
             case "a":
             case "age":
-                value = Stats.getAgeStat(player);
-                break;
+                return (player != null) ? Stats.getAgeStat(player) : WORD_AGE;
             case "rl":
             case "resilience":
-                value = Stats.getResilienceStat(player);
-                break;
+                return (player != null) ? Stats.getResilienceStat(player) : WORD_RESILIENCE;
             case "f":
             case "ferocity":
-                value = Stats.getFerocityStat(player);
-                break;
+                return (player != null) ? Stats.getFerocityStat(player) : WORD_FEROCITY;
             case "m":
             case "magic":
-                value = Stats.getMagicStat(player);
-                break;
+                return (player != null) ? Stats.getMagicStat(player) : WORD_MAGIC;
             case "h":
             case "height":
-                value = Stats.getHeightStat(player);
-                break;
-             default:
-                 value = Stats.getResistanceStat(player);                        // #####DO SOMETHING ELSE HERE
-                 break;
+                return (player != null) ? Stats.getHeightStat(player) : WORD_HEIGHT;
+            default:
+                return (player != null) ? Stats.getResistanceStat(player) : WORD_RESISTANCE;
         }
-        return value;
     }
 
 
@@ -137,13 +118,13 @@ public class Battle {
         List<Player> activePlayers = sortPlayersByAttributeStat(attribCondition);
 
         StringBuilder sb = new StringBuilder();
-        String attribStatHeader = getAttributeNameFromInput(attribCondition[0]) + getConditionFromInput(attribCondition[1]);
+        String attribStatHeader = getAttribValueOrName(attribCondition[0], null) + getConditionFromInput(attribCondition[1]);
         sb.append("\n\r").append(TABLE_BORDER);
         sb.append("\n\r").append(String.format(TABLE_HEADER_FORMAT, TABLE_HEADER_PLAYER, TABLE_HEADER_CARD ,attribStatHeader));
         for (Player p : activePlayers) {
             sb.append("\n\r");
             sb.append(String.format(TABLE_FORMAT, p.getUsername(), p.getDeck().get(0).getName(),
-                    getValueOfAttribute(attribCondition[0], p)));
+                    getAttribValueOrName(attribCondition[0], p)));
         }
         sb.append("\n\r").append(TABLE_BORDER);
         return sb.toString();
@@ -152,8 +133,8 @@ public class Battle {
     private static List<Player> sortPlayersByAttributeStat(String[] attribCondition){
         List<Player> sortedPlayers = Game.getActivePlayers();
         sortedPlayers.sort((o1, o2) -> {
-            int winnerStat = getValueOfAttribute(attribCondition[0], o1);
-            int enemyStat = getValueOfAttribute(attribCondition[0], o2);
+            int winnerStat = (int) getAttribValueOrName(attribCondition[0], o1);
+            int enemyStat = (int) getAttribValueOrName(attribCondition[0], o2);
             if(winnerStat == enemyStat){
                 return 0;
             }
@@ -169,33 +150,7 @@ public class Battle {
         return "(high)";
     }
 
-    private static String getAttributeNameFromInput(String attributeShortHand){
-        switch (attributeShortHand){
-            case "rs":
-            case "resistance":
-                return "Resistance";
-            case "a":
-            case "age":
-                return "Age";
-            case "rl":
-            case "resilience":
-                return "Resilience";
-            case "f":
-            case "ferocity":
-                return "Ferocity";
-            case "m":
-            case "magic":
-                return "Magic";
-            case "h":
-            case "height":
-                return "Height";
-            default:
-                return "?";                   // #####DO SOMETHING ELSE HERE
-        }
-    }
-
     private static void setCardPile(List<Card> cardPile){
         Battle.cardPile = cardPile;
     }
-
 }
