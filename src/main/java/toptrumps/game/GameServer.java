@@ -1,11 +1,9 @@
 package toptrumps.game;
 
 import toptrumps.player.Player;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-
 import static toptrumps.constants.Constants.SERVER_PORT;
 
 public class GameServer {
@@ -13,7 +11,6 @@ public class GameServer {
     private static Game game = new Game(4);
 
     //TODO: Refactor, check if method should be static. check if classes should be instances or util
-    //TODO: Remove wandering TODO comments. Remove comments. Remove print statements.
 
     //TODO: Display who won to all players? Keep a untouched player list to continue displaying messages?
     //TODO: Move game methods from Player class to Game class. Put methods in correct classes

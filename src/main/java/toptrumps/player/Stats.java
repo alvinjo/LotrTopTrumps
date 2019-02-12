@@ -1,23 +1,50 @@
 package toptrumps.player;
 
+import static toptrumps.constants.Constants.*;
+
 public class Stats {
 
-    public static int getResilienceStat(Player player){
+    private static int getResilienceStat(Player player){
         return player.getDeck().get(0).getResilience();
     }
-    public static int getAgeStat(Player player){
+    private static int getAgeStat(Player player){
         return player.getDeck().get(0).getAge();
     }
-    public static int getResistanceStat(Player player){
+    private static int getResistanceStat(Player player){
         return player.getDeck().get(0).getResistance();
     }
-    public static int getFerocityStat(Player player){
+    private static int getFerocityStat(Player player){
         return player.getDeck().get(0).getFerocity();
     }
-    public static int getMagicStat(Player player){
+    private static int getMagicStat(Player player){
         return player.getDeck().get(0).getMagic();
     }
-    public static int getHeightStat(Player player){
+    private static int getHeightStat(Player player){
         return player.getDeck().get(0).getHeight();
+    }
+
+    public static Object getAttribValueOrName(String attrib, Player player){
+        switch(attrib){
+            case "rs":
+            case "resistance":
+                return (player != null) ? getResistanceStat(player) : WORD_RESISTANCE;
+            case "a":
+            case "age":
+                return (player != null) ? getAgeStat(player) : WORD_AGE;
+            case "rl":
+            case "resilience":
+                return (player != null) ? getResilienceStat(player) : WORD_RESILIENCE;
+            case "f":
+            case "ferocity":
+                return (player != null) ? getFerocityStat(player) : WORD_FEROCITY;
+            case "m":
+            case "magic":
+                return (player != null) ? getMagicStat(player) : WORD_MAGIC;
+            case "h":
+            case "height":
+                return (player != null) ? getHeightStat(player) : WORD_HEIGHT;
+            default:
+                return (player != null) ? getResistanceStat(player) : WORD_RESISTANCE;
+        }
     }
 }

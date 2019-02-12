@@ -2,11 +2,9 @@ package toptrumps.game;
 
 import toptrumps.deck.Card;
 import toptrumps.player.Player;
-import toptrumps.player.Stats;
-
 import java.util.*;
-
 import static toptrumps.constants.Constants.*;
+import static toptrumps.player.Stats.getAttribValueOrName;
 
 public class Battle {
 
@@ -79,33 +77,6 @@ public class Battle {
                 return true;
         }
     }
-
-
-    private static Object getAttribValueOrName(String attrib, Player player){
-        switch(attrib){
-            case "rs":
-            case "resistance":
-                return (player != null) ? Stats.getResistanceStat(player) : WORD_RESISTANCE;
-            case "a":
-            case "age":
-                return (player != null) ? Stats.getAgeStat(player) : WORD_AGE;
-            case "rl":
-            case "resilience":
-                return (player != null) ? Stats.getResilienceStat(player) : WORD_RESILIENCE;
-            case "f":
-            case "ferocity":
-                return (player != null) ? Stats.getFerocityStat(player) : WORD_FEROCITY;
-            case "m":
-            case "magic":
-                return (player != null) ? Stats.getMagicStat(player) : WORD_MAGIC;
-            case "h":
-            case "height":
-                return (player != null) ? Stats.getHeightStat(player) : WORD_HEIGHT;
-            default:
-                return (player != null) ? Stats.getResistanceStat(player) : WORD_RESISTANCE;
-        }
-    }
-
 
     public static void displayBattleResultTable(String[] attribCondition){
         List<Player> activePlayers = Game.getActivePlayers();
